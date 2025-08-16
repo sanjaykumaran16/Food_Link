@@ -164,10 +164,6 @@ We welcome contributions to improve Food Link! Please read our contributing guid
 4. Test thoroughly
 5. Submit a pull request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
 ## 🙏 Acknowledgments
 
 - **Restaurants**: For donating surplus food and reducing waste
