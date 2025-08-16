@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import styles from './RestaurantLogin.module.css'; // We'll create this CSS module next
 import { FaEnvelope, FaLock } from 'react-icons/fa'; // Import icons
 
-function RestaurantLogin() {
+function RestaurantLogin({ showForgotPassword }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -60,7 +60,7 @@ function RestaurantLogin() {
         {error && <p className={styles.errorMessage}>{error}</p>}
         
         <div className={styles.formGroup}>
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">Email ID</label>
           <div className={styles.inputGroup}> {/* Wrapper for icon + input */} 
             <FaEnvelope className={styles.inputIcon} />
             <input
@@ -89,6 +89,12 @@ function RestaurantLogin() {
             />
           </div>
         </div>
+
+        {showForgotPassword && (
+          <div className={styles.forgotPasswordRow}>
+            <a href="#" className={styles.forgotPasswordLink}>Forgot Password?</a>
+          </div>
+        )}
 
         <button type="submit" className={styles.submitButton}>Login</button>
       </form>

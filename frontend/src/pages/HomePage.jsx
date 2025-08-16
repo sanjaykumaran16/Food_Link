@@ -8,7 +8,7 @@ function HomePage() {
   return (
     <div className={styles.homeContainer}>
       <header className={styles.heroSection}>
-        <h1>Welcome to Zero Food Waste</h1>
+        <h1>Welcome to Food Link</h1>
         <p className={styles.subtitle}>
           Connecting surplus food with those who need it most.
         </p>

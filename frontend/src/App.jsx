@@ -196,6 +196,10 @@ function Layout() {
 
       <div className="mainContentWithNavbar">
         <nav className="appNavbar">
+          <NavLink to="/" className="navbarLogo" style={{display: 'flex', alignItems: 'center', textDecoration: 'none', marginRight: '1.5rem'}}>
+                    <img src="/logo.png" alt="Food Link Logo" style={{height: '38px', width: '38px', marginRight: '0.7rem', borderRadius: '8px', background: '#fff'}} />
+        <span style={{fontWeight: 700, fontSize: '1.35rem', color: 'var(--text-on-gradient)', letterSpacing: '0.5px'}}>Food Link</span>
+          </NavLink>
           {showHamburger && (
             <button onClick={toggleSidebar} className="hamburgerButton">
               <FaBars />
@@ -210,14 +214,15 @@ function Layout() {
               </>
             )}
           </ul>
-          
-          {showHamburger && !isLoadingUser && currentUser && (
-              <ProfileDropdown user={currentUser} onLogout={handleLogout} />
-          )}
-          <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-           {showHamburger && isLoadingUser && (
-              <div style={{marginLeft: 'auto', paddingRight: '1rem', color: '#800000'}}>...</div> 
-           )}
+          <div className="navbarRight">
+            {showHamburger && !isLoadingUser && currentUser && (
+                <ProfileDropdown user={currentUser} onLogout={handleLogout} />
+            )}
+            <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+            {showHamburger && isLoadingUser && (
+                <div style={{marginLeft: 'auto', paddingRight: '1rem', color: '#800000'}}>...</div> 
+            )}
+          </div>
         </nav>
 
         <div className="mainContentContainer">

@@ -189,8 +189,10 @@
   align-items: center;
   gap: 2rem;
   padding: 0;
-  flex-grow: 1;
-  justify-content: center;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .navList li {
@@ -278,4 +280,36 @@ textarea:hover {
   margin-left: auto;
   padding-right: 1rem;
   color: var(--accent-primary);
+}
+
+.navbarLogo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  margin-right: 1.5rem;
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--text-on-gradient);
+  letter-spacing: 0.5px;
+  transition: opacity 0.2s;
+}
+
+.navbarLogo img {
+  height: 38px;
+  width: 38px;
+  margin-right: 0.7rem;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.navbarLogo:hover {
+  opacity: 0.85;
+}
+
+.navbarRight {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }

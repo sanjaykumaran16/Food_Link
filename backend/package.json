@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "food-link-backend",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Backend server for Food Link - A food donation and distribution platform",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",

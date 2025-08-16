@@ -1,20 +1,35 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import styles from './Portal.module.css'; // Shared styles for portals
+import React, { useState } from 'react';
+import styles from './NgoPortal.module.css';
+import NgoLogin from '../ngo_login/NgoLogin';
+import NgoRegistration from '../ngo_reg/NgoRegistration';
 
 function NgoPortal() {
+  const [activeTab, setActiveTab] = useState('login');
+
   return (
-    <div className={styles.portalContainer}> {/* Background fills parent */}
-      <div className={styles.portalContent}> {/* Center the inner content */}
-        <h2>NGO Portal</h2>
-        <p>Please login or register to continue.</p>
-        <div className={styles.buttonGroup}>
-          <Link to="/ngo/login" className={styles.portalButton}>Login</Link>
-          <Link to="/ngo/register" className={styles.portalButton}>Register</Link>
+    <div className={styles.portalContainer}>
+      <div className={styles.contentWrapper}>
+        <h1 className={styles.welcomeHeading}>Welcome back</h1>
+        <div className={styles.pillToggleGroup}>
+          <button
+            className={activeTab === 'login' ? `${styles.pillToggle} ${styles.activePill}` : styles.pillToggle}
+            onClick={() => setActiveTab('login')}
+          >
+            NGO
+          </button>
+          <button
+            className={activeTab === 'signup' ? `${styles.pillToggle} ${styles.activePill}` : styles.pillToggle}
+            onClick={() => setActiveTab('signup')}
+          >
+            Sign Up
+          </button>
+        </div>
+        <div className={styles.formCard}>
+          {activeTab === 'login' ? <NgoLogin showForgotPassword /> : <NgoRegistration />}
         </div>
       </div>
     </div>
   );
 }
 
-export default NgoPortal; 
+export default NgoPortal;

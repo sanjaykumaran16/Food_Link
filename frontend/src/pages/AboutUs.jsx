@@ -30,7 +30,7 @@ function AboutUs() {
 
   return (
     <div className={styles.aboutContainer}>
-      <h1 className={styles.title}>About Zero Food Wastage</h1>
+              <h1 className={styles.title}>About Food Link</h1>
       
       <section className={styles.purposeSection}>
         <h2>Our Mission</h2>

@@ -88,24 +88,22 @@
 
 /* Button styling */
 .submitButton {
-  padding: 0.9rem 2rem;
-  background: linear-gradient(90deg, var(--accent-primary), var(--accent-primary-darker)); /* Green Gradient */
-  color: var(--button-text);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1.1rem;
+  width: 100%;
+  background: #36e08b;
+  color: #fff;
+  font-size: 1.25rem;
   font-weight: 600;
+  border: none;
+  border-radius: 2rem;
+  padding: 0.9rem 0;
   margin-top: 1.5rem;
-  transition: all 0.3s ease;
-  align-self: center;
-  box-shadow: 0 3px 8px var(--accent-primary-hover-bg); /* Green shadow */
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(54,224,139,0.10);
 }
-
-.submitButton:hover {
-  background: linear-gradient(90deg, var(--accent-primary-darker), var(--accent-primary)); /* Darker Green Gradient */
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px var(--accent-primary-hover-bg); /* Green shadow */
+.submitButton:hover, .submitButton:focus {
+  background: #1a8a46;
+  box-shadow: 0 4px 16px rgba(26,138,70,0.13);
 }
 
 .submitButton:disabled {
@@ -140,4 +138,38 @@
   color: var(--link-color); /* Primary Green */
   text-decoration: underline;
   font-weight: 500;
+}
+
+.forgotPasswordRow {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+.forgotPasswordLink {
+  color: #1a8a46;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.forgotPasswordLink:hover, .forgotPasswordLink:focus {
+  color: #36e08b;
+  text-decoration: underline;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 1rem 1.2rem 1rem 2.8rem;
+  border: none;
+  border-radius: 8px;
+  background: #f3f6f4;
+  color: #222;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 1px 3px rgba(26,138,70,0.04);
+  transition: box-shadow 0.2s, border 0.2s;
+}
+.inputGroup input:focus {
+  outline: none;
+  box-shadow: 0 2px 8px rgba(26,138,70,0.10);
+  border: 1.5px solid #36e08b;
 } 
