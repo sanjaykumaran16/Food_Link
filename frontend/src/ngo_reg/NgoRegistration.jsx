@@ -54,10 +54,18 @@ function NgoRegistration() {
       const response = await fetch(apiUrl, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registrationData), // Send data matching schema
+        body: JSON.stringify(registrationData),
       });
 
-      const data = await response.json();
+      // Safely parse JSON — guards against empty or non-JSON responses
+      let data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        data = { message: text || 'Unexpected server response' };
+      }
 
       if (!response.ok) {
         throw new Error(data.message || `HTTP error! status: ${response.status}`);
@@ -65,12 +73,9 @@ function NgoRegistration() {
 
       // Handle successful registration
       setSuccess('Registration successful! You can now log in.');
-      setFormData({ // Clear form
-        name: '', contact_person: '', email: '', phone: '', address: '', password: '', contactNumber: '' // Clear new fields too
+      setFormData({
+        name: '', contact_person: '', email: '', phone: '', address: '', password: '', contactNumber: ''
       });
-      // Optional: Store token if registration returns one, then redirect
-      // localStorage.setItem('ngoToken', data.token);
-      // setTimeout(() => navigate('/ngo/login'), 2000); // If using react-router navigate
 
     } catch (err) {
       console.error('Registration error:', err);

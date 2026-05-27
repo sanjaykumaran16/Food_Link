@@ -45,10 +45,17 @@ function RestaurantRegistration() {
         body: JSON.stringify(formData), // Send all form data
       });
 
-      const data = await response.json();
+      // Safely parse JSON — guards against empty or non-JSON responses
+      let data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        data = { message: text || 'Unexpected server response' };
+      }
 
       if (!response.ok) {
-        // Use error message from backend if available
         throw new Error(data.message || `HTTP error! status: ${response.status}`);
       }
 
