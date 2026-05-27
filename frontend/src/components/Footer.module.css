@@ -1,0 +1,183 @@
+.footer {
+  background: linear-gradient(to bottom, #111827, #0f172a);
+  color: #cbd5e1;
+  padding: 4rem 2rem 2rem 2rem;
+  border-top: 1px solid #1f2937;
+  font-family: 'Outfit', sans-serif;
+  margin-top: auto;
+}
+
+.footerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 3rem;
+}
+
+.footerCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.brandTitle {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brandTagline {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.initiativeInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(30, 41, 59, 0.5);
+  padding: 0.8rem 1.2rem;
+  border-radius: var(--radius-md, 12px);
+  border: 1px solid #1e293b;
+  margin-top: 0.5rem;
+}
+
+.colIcon {
+  color: #14b8a6;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.colLabel {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.colValue {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.colHeading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.colHeading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background-color: #14b8a6;
+  border-radius: 99px;
+}
+
+.colLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.colLinks a {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all var(--transition-fast, 0.2s);
+}
+
+.colLinks a:hover {
+  color: #14b8a6;
+  padding-left: 4px;
+}
+
+.contactDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #94a3b8;
+}
+
+.contactIcon {
+  color: #14b8a6;
+  font-size: 1rem;
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
+.bottomBar {
+  max-width: 1200px;
+  margin: 3rem auto 0 auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid #1e293b;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.bottomBar p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.heartIcon {
+  color: #ef4444;
+  animation: heartPulse 1.5s infinite;
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+@media (max-width: 1024px) {
+  .footerContainer {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer {
+    padding: 3rem 1.5rem 1.5rem 1.5rem;
+  }
+  .footerContainer {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .initiativeInfo {
+    padding: 0.75rem 1rem;
+  }
+}

@@ -1,31 +1,23 @@
-/* Styles for Add Food Listing form - Inspired by minimalist design */
-
-/* Use a global font setting if possible, otherwise define here */
-:global(body) {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: #f4f7f6; /* Keep light page background */
-}
-
 .formContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 3rem 3.5rem; /* Increased padding */
-  border-radius: 8px;
-  max-width: 580px; /* Consistent width */
+  padding: 3rem 2.5rem;
+  border-radius: 24px;
+  max-width: 580px;
   margin: 3rem auto;
-  background: #ffffff;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07); /* Softer shadow */
-  /* border: 1px solid #e9ecef; Removed border */
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
 }
 
 .formContainer h2 {
-  color: #800000; /* Maroon heading */
-  margin-bottom: 2.5rem; /* More space below heading */
-  font-weight: 700; /* Bolder */
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  font-weight: 800;
   text-align: center;
-  font-size: 1.7rem;
-  letter-spacing: 0.5px;
+  font-size: 1.8rem;
+  letter-spacing: -0.015em;
 }
 
 .listingForm {
@@ -35,95 +27,108 @@
 }
 
 .formGroup {
-  margin-bottom: 1.8rem; /* Increased spacing */
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .formGroup label {
-  display: block;
-  margin-bottom: 0.6rem;
-  font-weight: 500;
-  color: #6c757d; /* Lighter grey label */
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
   text-align: left;
-  font-size: 0.9rem;
 }
 
-/* Input field styling like the image */
 .formGroup input {
   width: 100%;
-  padding: 1rem 1.2rem; /* Adjust padding */
-  border: none; /* Remove all borders */
-  border-radius: 6px;
+  padding: 0.85rem 1.1rem;
+  border: 1.5px solid var(--input-border);
+  border-radius: 12px;
   box-sizing: border-box;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
   font-size: 1rem;
-  color: #495057;
-  background-color: #f8f9fa; /* Light grey background */
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); /* Subtle inner shadow */
+  font-family: inherit;
+  color: var(--text-primary);
+  background-color: var(--input-bg);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .formGroup input:focus {
-  background-color: #fff; /* White background on focus */
+  background-color: var(--card-bg);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 4px var(--input-focus-shadow);
   outline: none;
-  /* Add maroon bottom border/shadow on focus */
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05), 0 2px 0 -1px #800000; /* Example using box-shadow as border */
-  /* Or use border-bottom: 2px solid #800000; padding-bottom: calc(1rem - 2px); */
 }
 
 .formGroup input::placeholder {
-  color: #ced4da; /* Lighter placeholder */
+  color: var(--text-muted);
+  opacity: 0.8;
 }
 
-/* Button styling */
 .submitButton {
-  padding: 0.9rem 2rem;
-  /* Maroon Gradient */
-  background: linear-gradient(90deg, #800000, #a00000);
-  color: white;
+  padding: 0.85rem 2.25rem;
+  background-color: var(--accent-primary);
+  color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
   margin-top: 1.5rem;
-  transition: all 0.3s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   align-self: center;
-  box-shadow: 0 3px 8px rgba(128, 0, 0, 0.2); /* Maroon shadow */
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.15);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .submitButton:hover {
-  /* Darker Maroon Gradient */
-  background: linear-gradient(90deg, #660000, #800000);
+  background-color: var(--accent-primary-darker);
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(128, 0, 0, 0.25);
+  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.25);
 }
 
 .submitButton:disabled {
-    background: #adb5bd;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+  background: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-/* Message Styles - keep as is or adjust slightly */
 .errorMessage, .successMessage {
-  padding: 0.9rem 1.2rem;
-  border-radius: 6px;
-  margin-top: -0.5rem; /* Position closer to heading */
+  padding: 0.85rem 1.2rem;
+  border-radius: 12px;
   margin-bottom: 1.5rem;
   text-align: center;
   width: 100%;
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .errorMessage {
-  color: #721c24;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
+  color: var(--error-text);
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
 }
 
 .successMessage {
-  color: #155724;
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
-} 
+  color: var(--success-text);
+  background-color: var(--success-bg);
+  border: 1px solid var(--success-border);
+}
+
+@media (max-width: 580px) {
+  .formContainer {
+    padding: 2rem 1.5rem;
+    margin: 2rem 1rem;
+    border-radius: 20px;
+  }
+}

@@ -1,119 +1,202 @@
 .myListingsContainer {
-  padding: 2rem;
-  font-family: sans-serif;
+  padding: var(--space-8);
+  font-family: 'Outfit', sans-serif;
 }
 
 .myListingsContainer h2 {
-  color: #333;
-  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: var(--space-6);
   text-align: center;
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
 }
 
 .errorMessage {
-  color: #d9534f; /* Red */
-  background-color: #f2dede;
-  border: 1px solid #ebccd1;
-  padding: 0.8rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  color: var(--error-text);
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
 }
 
+/* Cards grid layout replacing old table */
+.listingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-4);
+}
+
+.listingCard {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.listingCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: var(--accent-primary);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.cardFoodName {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.cardDivider {
+  border: none;
+  border-top: 1px solid var(--card-border);
+  margin: var(--space-2) 0;
+}
+
+.cardDetail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.cardDetail strong {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.cardActions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  border-top: 1px solid var(--card-border);
+  padding-top: var(--space-4);
+}
+
+/* Keep table for backward compat but hide on small screens */
 .listingsTable {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: var(--space-4);
+  box-shadow: var(--card-shadow);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--card-border);
 }
 
 .listingsTable th,
 .listingsTable td {
-  border: 1px solid #ddd;
-  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--card-border);
+  padding: 0.9rem 1rem;
   text-align: left;
   vertical-align: middle;
 }
 
 .listingsTable th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-  color: #555;
+  background-color: var(--bg-secondary);
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.listingsTable tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+.listingsTable tbody tr {
+  background-color: var(--card-bg);
+  transition: background-color var(--transition-fast);
 }
 
 .listingsTable tbody tr:hover {
-  background-color: #e9ecef; /* A slightly more noticeable hover color */
-  cursor: default; /* Indicate rows aren't directly clickable (unless we add row-click functionality) */
-  transition: background-color 0.15s ease-in-out; /* Smooth transition for hover */
-}
-
-/* Add transition to table cells for potential future animations */
-.listingsTable td {
-  transition: background-color 0.15s ease-in-out; 
+  background-color: var(--card-bg-hover);
 }
 
 .statusBadge {
-  padding: 0.3em 0.6em;
-  border-radius: 0.25em;
-  font-size: 0.9em;
-  font-weight: bold;
+  padding: 0.3em 0.8em;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
   color: white;
   white-space: nowrap;
+  letter-spacing: 0.03em;
 }
 
-/* Status-specific colors */
 .statusAvailable {
-  background-color: #5cb85c; /* Green */
+  background: var(--green-gradient);
 }
 
 .statusCollected {
-  background-color: #f0ad4e; /* Orange/Yellow */
+  background: var(--amber-gradient);
 }
 
 .statusExpired {
-  background-color: #a94442; /* Dark Red */
-  /* Alternatively, use Bootstrap's danger color: #d9534f; */
+  background-color: var(--error-text);
 }
 
-/* Styles for Action Buttons */
 .actionsCell {
-  text-align: center; /* Center buttons in the cell */
-  white-space: nowrap; /* Prevent buttons from wrapping */
+  text-align: center;
+  white-space: nowrap;
 }
 
 .actionButton {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.1rem; /* Adjust icon size */
-  padding: 0.3rem 0.5rem; /* Add some spacing around icon */
-  margin: 0 0.3rem; /* Space between buttons */
-  color: #555; /* Default icon color */
-  transition: color 0.2s ease-in-out, transform 0.2s ease;
-  vertical-align: middle; /* Align icons better with text */
+  font-size: var(--font-size-lg);
+  padding: 0.4rem 0.6rem;
+  margin: 0 0.2rem;
+  color: var(--text-muted);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+  vertical-align: middle;
+  border-radius: var(--radius-sm);
 }
 
 .actionButton:hover {
-  transform: scale(1.1); /* Slight zoom effect */
+  transform: scale(1.15);
 }
 
 .editButton:hover:not(:disabled) {
-  color: #0275d8; /* Blue on hover when enabled */
+  color: var(--link-color);
+  background-color: var(--accent-primary-hover-bg);
 }
 
 .deleteButton:hover {
-  color: #d9534f; /* Red on hover */
+  color: var(--error-text);
+  background-color: var(--error-bg);
 }
 
-/* Style for disabled edit button */
 .disabledButton {
-  color: #ccc; /* Light gray color */
-  cursor: not-allowed; /* Indicate non-interactive */
+  color: var(--card-border);
+  cursor: not-allowed;
 }
 
 .disabledButton:hover {
-  color: #ccc; /* Keep color gray on hover */
-  transform: none; /* No zoom effect when disabled */
-} 
+  color: var(--card-border);
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .myListingsContainer {
+    padding: var(--space-4);
+  }
+  .listingsTable {
+    display: none;
+  }
+}
+
+

@@ -3,39 +3,44 @@
 .notificationsContainer {
   max-width: 800px;
   margin: 2rem auto;
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  padding: var(--space-8);
+  background-color: var(--card-bg);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--card-border);
 }
 
 .notificationsContainer h1 {
-  color: #800000; /* Maroon */
-  margin-bottom: 0; /* Remove bottom margin as it's handled by container */
+  color: var(--text-primary);
+  margin-bottom: 0;
   text-align: center;
-  font-weight: 600;
+  font-weight: 800;
+  font-size: var(--font-size-2xl);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  flex-grow: 1; /* Allow title to take space */
+  flex-grow: 1;
 }
 
 .loading, .noNotifications {
   text-align: center;
-  color: #6c757d;
-  font-size: 1.1rem;
-  margin-top: 3rem;
+  color: var(--text-muted);
+  font-size: var(--font-size-lg);
+  margin-top: var(--space-12);
+  padding: var(--space-8);
 }
 
 .errorMessage {
-  color: #721c24;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  padding: 1rem;
-  border-radius: 6px;
+  color: var(--error-text);
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
   text-align: center;
-  margin: 1rem 0;
+  margin: var(--space-4) 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
 }
 
 .notificationList {
@@ -46,12 +51,13 @@
 
 .notificationItem {
   display: flex;
-  align-items: flex-start; /* Align icon top */
-  gap: 1.5rem;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #e9ecef;
-  /* Add transition for background-color and transform */
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+  margin-bottom: var(--space-1);
 }
 
 .notificationItem:last-child {
@@ -59,30 +65,31 @@
 }
 
 .notificationItem:hover {
-  background-color: #f8f9fa;
-  transform: translateY(-3px); /* Slight lift on hover */
+  background-color: var(--card-bg-hover);
+  transform: translateX(4px);
 }
 
 /* Style for unread notifications */
 .unread {
-  background-color: #fffaf0; /* Light yellow/orange */
-  border-left: 4px solid #ffc107; /* Amber border */
+  background-color: var(--warning-bg);
+  border-left: 3px solid var(--accent-secondary);
+  border-radius: var(--radius-md);
 }
 
 .unread:hover {
-   background-color: #fff8e1; /* Slightly lighter on hover */
-   /* The translateY from .notificationItem:hover will still apply */
+  background-color: var(--warning-bg);
 }
 
-/* Style for read notifications (optional, less emphasis) */
+/* Style for read notifications */
 .read {
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 .notificationIcon {
-  color: #800000; /* Maroon */
-  font-size: 1.8rem;
-  margin-top: 0.2rem; /* Adjust vertical alignment */
+  color: var(--accent-primary);
+  font-size: 1.6rem;
+  margin-top: 0.2rem;
+  flex-shrink: 0;
 }
 
 .notificationContent {
@@ -90,22 +97,22 @@
 }
 
 .message {
-  margin: 0 0 0.5rem 0;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #343a40;
+  margin: 0 0 0.4rem 0;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
   line-height: 1.5;
 }
 
 .foodItem {
-  font-size: 0.9rem;
-  color: #6c757d;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
   margin: 0.3rem 0;
 }
 
 .timestamp {
-  font-size: 0.85rem;
-  color: #adb5bd;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
   margin: 0;
   display: flex;
   align-items: center;
@@ -114,39 +121,43 @@
 
 .headerContainer {
   display: flex;
-  justify-content: space-between; /* Push title and button apart */
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem; /* Add space below header */
-  flex-wrap: wrap; /* Allow wrapping on small screens */
-  gap: 1rem;
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
+  gap: var(--space-4);
 }
 
 .clearAllButton {
-  padding: 0.6rem 1.2rem;
-  background-color: #f8d7da; /* Light red background */
-  color: #721c24; /* Dark red text */
-  border: 1px solid #f5c6cb;
-  border-radius: 6px;
+  padding: 0.6rem 1.25rem;
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-border);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  transition: all var(--transition-base);
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .clearAllButton:hover:not(:disabled) {
-  background-color: #f1b0b7;
-  color: #58151c;
+  background-color: var(--error-text);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .clearAllButton:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .clearingMessage {
-    color: #6c757d;
-    font-style: italic;
-} 
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: var(--font-size-sm);
+}
+
+

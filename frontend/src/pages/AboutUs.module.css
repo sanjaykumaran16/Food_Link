@@ -1,163 +1,154 @@
 /* AboutUs.module.css */
 .aboutContainer {
-  max-width: 900px;
+  max-width: 960px;
   margin: 2rem auto;
-  padding: 2rem;
-  background-color: var(--bg-primary); /* Use variable */
-  border-radius: 8px;
-  /* Enhance shadow with green glow */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), /* Subtle dark shadow for depth */
-              0 0 15px 4px var(--accent-primary-hover-bg); /* Green glow using hover bg variable */
-  font-family: sans-serif;
+  padding: var(--space-8);
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--card-shadow);
+  font-family: 'Outfit', sans-serif;
   line-height: 1.7;
-  color: var(--text-primary); /* Use variable */
-  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-  /* Remove outline */
-  /* outline: 2px solid var(--accent-primary); */
-  /* outline-offset: 4px; */
+  color: var(--text-primary);
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 .title {
   text-align: center;
   color: var(--accent-primary);
-  margin-bottom: 2rem;
-  font-weight: 700;
+  margin-bottom: var(--space-8);
+  font-weight: 800;
+  font-size: var(--font-size-4xl);
+  letter-spacing: -0.025em;
 }
 
 .purposeSection, .statsSection, .howItWorksSection {
-  margin-bottom: 2.5rem;
-  border-bottom: 1px solid var(--card-border); /* Use variable */
+  margin-bottom: var(--space-10);
+  padding-bottom: var(--space-10);
+  border-bottom: 1px solid var(--card-border);
 }
 
 .aboutContainer section:last-child {
-    margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
 .aboutContainer h2 {
-  color: var(--text-secondary); /* Use variable */
-  margin-bottom: 1rem;
-  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+  font-weight: 700;
+  font-size: var(--font-size-2xl);
 }
 
 .aboutContainer p {
-  margin-bottom: 1rem;
-  color: var(--text-secondary); /* Use variable */
+  margin-bottom: var(--space-4);
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
 }
 
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-6);
 }
 
 .statCard {
-  background-color: var(--card-bg-alt); /* Use variable */
-  padding: 1.5rem;
-  border-radius: 8px;
+  background-color: var(--card-bg);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
   text-align: center;
   border: 1px solid var(--card-border);
-  box-shadow: 0 2px 5px var(--card-shadow);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-base);
 }
 
 .statCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px var(--card-shadow);
-    background-color: var(--accent-primary);
-    color: var(--button-text);
+  transform: translateY(-6px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: var(--accent-primary);
 }
 
 .statIcon {
   font-size: 2.5rem;
   color: var(--accent-primary);
-  margin-bottom: 0.8rem;
-  transition: color 0.3s ease;
+  margin-bottom: var(--space-3);
+  transition: transform var(--transition-base);
 }
 
 .statCard:hover .statIcon {
-  color: var(--button-text);
+  transform: scale(1.15);
 }
 
 .statNumber {
   display: block;
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
   color: var(--text-primary);
   line-height: 1.2;
-  transition: color 0.3s ease;
-}
-
-.statCard:hover .statNumber {
-  color: var(--button-text);
 }
 
 .statLabel {
   display: block;
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  margin-top: 0.3rem;
-  transition: color 0.3s ease;
-}
-
-.statCard:hover .statLabel {
-  color: var(--button-text);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+  font-weight: 600;
 }
 
 .howItWorksSection ol {
-    padding-left: 20px;
+  padding-left: 24px;
 }
 
 .howItWorksSection li {
-    margin-bottom: 0.8rem;
-    color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
 }
 
 .error {
-    color: var(--error-text); /* Use variable */
+  color: var(--error-text);
 }
 
-/* Styles for the new content cards */
+/* Content cards */
 .contentCard {
-  background-color: var(--card-bg-alt); /* Use variable */
-  padding: 1.5rem 2rem; /* Adjust padding */
-  border-radius: 8px;
+  background-color: var(--card-bg);
+  padding: var(--space-6) var(--space-8);
+  border-radius: var(--radius-xl);
   border: 1px solid var(--card-border);
-  box-shadow: 0 4px 10px var(--card-shadow);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-  margin-top: 1rem; /* Add space below heading */
-  opacity: 0; /* Add initial opacity for animation */
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-base);
+  margin-top: var(--space-6);
+  opacity: 0;
 }
 
-/* Apply specific animations */
 .purposeSection .contentCard {
-  animation: slideInLeft 0.6s ease-out 0.2s forwards; /* Delay slightly */
+  animation: slideInLeft 0.6s ease-out 0.15s forwards;
 }
 
 .howItWorksSection .contentCard {
-  animation: slideInRight 0.6s ease-out 0.2s forwards; /* Delay slightly */
+  animation: slideInRight 0.6s ease-out 0.15s forwards;
 }
 
 .contentCard p {
-  color: var(--text-primary); /* Use primary text inside card */
-  margin-bottom: 1rem;
-  transition: color 0.3s ease; /* Add transition */
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-base);
 }
 
 .contentCard p:last-child {
-  margin-bottom: 0; /* Remove bottom margin for last paragraph */
+  margin-bottom: 0;
 }
 
-/* Styles for the list inside the card */
 .contentCard ol {
-  padding-left: 20px; /* Keep list indentation */
-  margin-bottom: 0; /* Remove default bottom margin */
-  transition: color 0.3s ease; /* Add transition for list items */
+  padding-left: 24px;
+  margin-bottom: 0;
 }
 
 .contentCard li {
-  margin-bottom: 0.8rem; /* Keep list item spacing */
-  color: var(--text-primary); /* Use primary text inside card */
+  margin-bottom: var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
 }
 
 .contentCard li:last-child {
@@ -165,22 +156,14 @@
 }
 
 .contentCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px var(--card-shadow);
-  background-color: var(--accent-primary);
-  color: var(--button-text);
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: var(--accent-primary);
 }
 
-/* Change text color inside card on hover */
-.contentCard:hover p,
-.contentCard:hover li {
-  color: var(--button-text);
-}
-
-/* Define slide-in animations */
 @keyframes slideInLeft {
   from {
-    transform: translateX(-50px);
+    transform: translateX(-40px);
     opacity: 0;
   }
   to {
@@ -191,11 +174,13 @@
 
 @keyframes slideInRight {
   from {
-    transform: translateX(50px);
+    transform: translateX(40px);
     opacity: 0;
   }
   to {
     transform: translateX(0);
     opacity: 1;
   }
-} 
+}
+
+

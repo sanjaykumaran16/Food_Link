@@ -8,7 +8,7 @@ import {
   useNavigate
 } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaBars, FaInfoCircle, FaEnvelope, FaHome } from 'react-icons/fa';
+import { FaBars, FaInfoCircle, FaChartBar, FaHome } from 'react-icons/fa';
 
 import RestaurantLogin from './restraunt_login/RestaurantLogin';
 import RestaurantRegistration from './restraunt_reg/RestaurantRegistration';
@@ -18,7 +18,7 @@ import RestaurantPortal from './portals/RestaurantPortal';
 import NgoPortal from './portals/NgoPortal';
 import HomePage from './pages/HomePage';
 import AboutUs from './pages/AboutUs';
-import ContactUs from './pages/ContactUs';
+import OurImpact from './pages/OurImpact';
 import RestaurantDashboard from './restaurant_dashboard/RestaurantDashboard';
 import AddFoodListing from './restaurant_dashboard/AddFoodListing';
 import MyRestaurantListings from './restaurant_dashboard/MyRestaurantListings';
@@ -31,6 +31,7 @@ import AddRestaurantAdmin from './admin/AddRestaurantAdmin';
 import FoodListingsAdmin from './admin/FoodListingsAdmin';
 import AddNgoAdmin from './admin/AddNgoAdmin';
 import ThemeToggle from './components/ThemeToggle';
+import Footer from './components/Footer';
 
 import './App.css';
 
@@ -196,21 +197,21 @@ function Layout() {
 
       <div className="mainContentWithNavbar">
         <nav className="appNavbar">
-          <NavLink to="/" className="navbarLogo" style={{display: 'flex', alignItems: 'center', textDecoration: 'none', marginRight: '1.5rem'}}>
-                    <img src="/logo.png" alt="Food Link Logo" style={{height: '38px', width: '38px', marginRight: '0.7rem', borderRadius: '8px', background: '#fff'}} />
-        <span style={{fontWeight: 700, fontSize: '1.35rem', color: 'var(--text-on-gradient)', letterSpacing: '0.5px'}}>Food Link</span>
+          <NavLink to="/" className="navbarLogo">
+            <img src="/logo.png" alt="Food Link Logo" className="navbarLogoImg" />
+            <span className="navbarLogoText">Food Link</span>
           </NavLink>
           {showHamburger && (
             <button onClick={toggleSidebar} className="hamburgerButton">
               <FaBars />
             </button>
           )}
-          <ul className="navList" style={{ paddingLeft: showHamburger ? '0' : '3rem' }}>
-            <li><NavLink to="/" onClick={handleHomeClick} className={({ isActive }) => isActive && !currentUser ? "active" : ""}><FaHome /></NavLink></li>
+          <ul className="navList" style={{ paddingLeft: showHamburger ? '0' : '2rem' }}>
+            <li><NavLink to="/" onClick={handleHomeClick} className={({ isActive }) => isActive && !currentUser ? "active" : ""}><FaHome className="navIcon" /></NavLink></li>
             {!currentUser && (
               <>
-                <li><NavLink to="/about" className={({ isActive }) => isActive ? "active" : ""}><FaInfoCircle /></NavLink></li>
-                <li><NavLink to="/contact" className={({ isActive }) => isActive ? "active" : ""}><FaEnvelope /></NavLink></li>
+                <li><NavLink to="/about" className={({ isActive }) => isActive ? "active" : ""}><FaInfoCircle className="navIcon" /></NavLink></li>
+                <li><NavLink to="/impact" title="Our Impact" className={({ isActive }) => isActive ? "active" : ""}><FaChartBar className="navIcon" /></NavLink></li>
               </>
             )}
           </ul>
@@ -220,7 +221,7 @@ function Layout() {
             )}
             <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
             {showHamburger && isLoadingUser && (
-                <div style={{marginLeft: 'auto', paddingRight: '1rem', color: '#800000'}}>...</div> 
+                <div className="navbarLoading">...</div> 
             )}
           </div>
         </nav>
@@ -230,7 +231,7 @@ function Layout() {
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<AnimatedRoute><HomePage /></AnimatedRoute>} />
               <Route path="/about" element={<AnimatedRoute><AboutUs /></AnimatedRoute>} />
-              <Route path="/contact" element={<AnimatedRoute><ContactUs /></AnimatedRoute>} />
+              <Route path="/impact" element={<AnimatedRoute><OurImpact /></AnimatedRoute>} />
               <Route path="/restaurant" element={<AnimatedRoute><RestaurantPortal /></AnimatedRoute>} />
               <Route path="/ngo" element={<AnimatedRoute><NgoPortal /></AnimatedRoute>} />
               <Route path="/restaurant/login" element={<AnimatedRoute><RestaurantLogin /></AnimatedRoute>} />
@@ -254,6 +255,7 @@ function Layout() {
             </Routes>
           </AnimatePresence>
         </div>
+        {!showHamburger && <Footer />}
       </div>
     </div>
   );
