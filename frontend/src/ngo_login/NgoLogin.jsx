@@ -17,9 +17,8 @@ function NgoLogin() {
       setError('Please enter both email and password.');
       return;
     }
-
-    const apiUrl = `${import.meta.env.VITE_API_URL}/api/ngos/login`;
-    console.log('Attempting NGO login to:', apiUrl);
+    const apiUrl = '/api/ngos/login';
+    console.log('Attempting NGO login');
 
     try {
       const response = await fetch(apiUrl, { 

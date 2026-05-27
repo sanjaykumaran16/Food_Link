@@ -37,8 +37,7 @@ function NgoRegistration() {
       setError('Password must be at least 6 characters long.');
       return;
     }
-
-    const apiUrl = `${import.meta.env.VITE_API_URL}/api/ngos/register`;
+    const apiUrl = '/api/ngos/register';
     
     // Prepare data matching the backend schema (currently placeholder uses form data directly)
     const registrationData = {

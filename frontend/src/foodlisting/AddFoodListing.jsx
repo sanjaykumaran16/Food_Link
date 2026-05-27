@@ -39,8 +39,8 @@ function AddFoodListing() {
         return;
     }
 
-    const apiUrl = `${import.meta.env.VITE_API_URL}/api/food/add`;
-      console.log('Attempting to add food listing to:', apiUrl);
+    const apiUrl = '/api/food/add';
+      console.log('Attempting to add food listing');
 
     const listingData = {
         food_name,

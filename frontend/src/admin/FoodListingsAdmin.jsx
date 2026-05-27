@@ -24,12 +24,12 @@ function FoodListingsAdmin() {
       } 
 
       try {
-        const apiUrl = `${import.meta.env.VITE_API_URL}/api/foodlistings`; 
+        const apiUrl = '/api/foodlistings'; 
         // NOTE: This currently uses the NGO-restricted endpoint. 
         // You might need a separate admin endpoint /api/admin/foodlistings 
         // OR adjust the backend middleware for /api/foodlistings to allow admins.
 
-        console.log('Admin: Fetching listings from:', apiUrl);
+        console.log('Admin: Fetching listings');
         
         const response = await fetch(apiUrl, {
           headers: token ? { 'Authorization': `Bearer ${token}` } : {} // Send token if available
