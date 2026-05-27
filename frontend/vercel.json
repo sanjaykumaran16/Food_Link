@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "YOUR_RENDER_BACKEND_URL/api/$1"
+      "destination": "https://foodlink-backend-j61w.onrender.com/api/$1"
     },
     {
       "source": "/(.*)",
