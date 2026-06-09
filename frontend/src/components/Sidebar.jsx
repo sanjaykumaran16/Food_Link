@@ -59,13 +59,23 @@ function Sidebar({ isOpen, closeSidebar, currentUser }) {
           >
              <FaBell className={styles.icon} /> 
              Notifications
-             {/* Display badge only if count > 0 */}
              {unreadCount > 0 && (
                 <span className={styles.notificationBadge}>{unreadCount}</span>
              )}
           </NavLink>
         </li>
-        {/* Add other restaurant links later? e.g., Profile */}
+        <li>
+          <NavLink to="/restaurant/dashboard/analytics" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Analytics</NavLink>
+        </li>
+        <li>
+          <NavLink to="/restaurant/dashboard/photos" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Photos &amp; Safety</NavLink>
+        </li>
+        <li>
+          <NavLink to="/restaurant/dashboard/messages" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Messages</NavLink>
+        </li>
+        <li>
+          <NavLink to="/profile" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Profile</NavLink>
+        </li>
       </>
     );
   } else if (userType === 'ngo') {
@@ -92,6 +102,30 @@ function Sidebar({ isOpen, closeSidebar, currentUser }) {
             {/* <FaListAlt className={styles.icon} /> */}
              Available Donations
           </NavLink>
+        </li>
+        <li>
+          <NavLink to="/ngo/dashboard/browse" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Map Browse</NavLink>
+        </li>
+        <li>
+          <NavLink to="/ngo/dashboard/claims" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>My Claims</NavLink>
+        </li>
+        <li>
+          <NavLink to="/ngo/dashboard/messages" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Messages</NavLink>
+        </li>
+        <li>
+          <NavLink to="/profile" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Profile</NavLink>
+        </li>
+      </>
+    );
+  } else if (userType === 'volunteer') {
+    sidebarTitle = 'Volunteer Menu';
+    navLinks = (
+      <>
+        <li>
+          <NavLink to="/volunteer/dashboard" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Delivery Tasks</NavLink>
+        </li>
+        <li>
+          <NavLink to="/profile" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Profile</NavLink>
         </li>
       </>
     );

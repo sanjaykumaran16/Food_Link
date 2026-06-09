@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import styles from './HomePage.module.css';
 import { FaHandsHelping, FaUtensils, FaBuilding, FaQuoteLeft, FaStar, FaGlobe, FaShieldAlt, FaHeart } from 'react-icons/fa';
+import { getPublicStats } from '../services/impactService';
 
 function HomePage() {
   const [stats, setStats] = useState({ restaurants: 12, ngos: 8, donations: 340 });
@@ -11,11 +12,8 @@ function HomePage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('/api/stats');
-        if (res.ok) {
-          const data = await res.json();
-          setStats(data);
-        }
+        const data = await getPublicStats();
+        setStats(data);
       } catch (err) {
         console.error('Failed to fetch live stats, using default values:', err);
       } finally {

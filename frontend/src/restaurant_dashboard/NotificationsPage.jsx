@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import styles from './NotificationsPage.module.css'; // Create CSS module
-import { FaBell, FaUtensils, FaClock, FaTrashAlt } from 'react-icons/fa'; // Icons
+import styles from './NotificationsPage.module.css';
+import { FaBell, FaUtensils, FaClock, FaTrashAlt } from 'react-icons/fa';
+import { getNotifications, markAllRead, deleteAllNotifications } from '../services/notificationService';
 
 function NotificationsPage() {
   const [notifications, setNotifications] = useState([]);
@@ -13,40 +14,11 @@ function NotificationsPage() {
     const fetchAndMarkRead = async () => {
       setLoading(true);
       setError('');
-      const token = localStorage.getItem('restaurantToken');
-
-      if (!token) {
-        setError('Authentication token not found. Please log in again.');
-        setLoading(false);
-        return;
-      }
-
       try {
-        // 1. Fetch Notifications
-        const fetchResponse = await fetch('/api/notifications/myNotifications', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (!fetchResponse.ok) {
-          const errorData = await fetchResponse.json().catch(() => ({}));
-          throw new Error(errorData.message || 'Failed to fetch notifications.');
-        }
-
-        const data = await fetchResponse.json();
+        const data = await getNotifications();
         setNotifications(data);
-
-        // 2. Mark them as read (fire-and-forget for UI, but log errors)
-        // Check if there were any unread notifications before calling markAllRead
         const hasUnread = data.some(n => !n.isRead);
-        if (hasUnread) { 
-            await fetch('/api/notifications/markAllRead', {
-                method: 'PUT',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            // No need to handle success explicitly here, 
-            // as the main effect is on the backend count for next load
-        }
-
+        if (hasUnread) await markAllRead();
       } catch (err) {
         console.error("Error in notification fetch/mark read:", err);
         setError(err.message || 'Could not load or update notifications.');
@@ -75,21 +47,10 @@ function NotificationsPage() {
       }
 
       setIsClearing(true);
-      setError(''); 
-      const token = localStorage.getItem('restaurantToken');
+      setError('');
 
       try {
-          const response = await fetch('/api/notifications/deleteAll', {
-              method: 'DELETE',
-              headers: { 'Authorization': `Bearer ${token}` }
-          });
-
-          if (!response.ok) {
-              const errorData = await response.json().catch(() => ({}));
-              throw new Error(errorData.message || 'Failed to delete notifications.');
-          }
-
-          // Clear notifications from local state immediately
+          await deleteAllNotifications();
           setNotifications([]);
           // Optionally show a temporary success message?
 

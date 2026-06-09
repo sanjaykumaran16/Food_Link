@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import styles from './RestaurantLogin.module.css'; // We'll create this CSS module next
-import { FaEnvelope, FaLock } from 'react-icons/fa'; // Import icons
+import { useNavigate } from 'react-router-dom';
+import styles from './RestaurantLogin.module.css';
+import { FaEnvelope, FaLock } from 'react-icons/fa';
+import { login } from '../services/authService';
 
 function RestaurantLogin({ showForgotPassword }) {
   const [email, setEmail] = useState('');
@@ -22,41 +23,15 @@ function RestaurantLogin({ showForgotPassword }) {
     // console.log('Attempting login to:', apiUrl); // No longer needed
 
     try {
-      const response = await fetch('/api/restaurants/login', { // Use relative path for proxy
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      // Safely parse JSON — guards against empty or non-JSON responses
-      let data;
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        data = await response.json();
+      const data = await login({ email, password, role: 'restaurant' });
+      if (data.token || data.accessToken) {
+        navigate('/restaurant/dashboard');
       } else {
-        const text = await response.text();
-        data = { message: text || 'Unexpected server response' };
-      }
-
-      if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
-      }
-
-      // Handle successful login
-      // Store token (ensure your backend actually sends a token named 'token')
-      if (data.token) {
-        localStorage.setItem('restaurantToken', data.token);
-        // Redirect to dashboard
-        navigate('/restaurant/dashboard'); 
-      } else {
-        // Handle case where login succeeds but no token is returned (shouldn't happen with proper backend)
-        console.error('Login successful but no token received.');
         setError('Login failed: Could not authenticate session.');
       }
-      // Remove placeholder alert
     } catch (err) {
       console.error('Login error:', err);
-      setError(err.message || 'Login failed. Please check your credentials.');
+      setError(err.response?.data?.message || err.message || 'Login failed. Please check your credentials.');
     }
   };
 

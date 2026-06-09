@@ -237,6 +237,26 @@
 /* Card Actions */
 .cardFooter {
   margin-top: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.messageButton {
+  width: 100%;
+  padding: 0.65rem;
+  border-radius: 12px;
+  border: 1px solid var(--accent-primary, #2d6a4f);
+  background: transparent;
+  color: var(--accent-primary, #2d6a4f);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.messageButton:hover {
+  background: var(--accent-primary, #2d6a4f);
+  color: #fff;
 }
 
 .claimButton {

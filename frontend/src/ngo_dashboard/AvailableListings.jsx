@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from './AvailableListings.module.css';
 import { FaSearch, FaUtensils, FaCalendarAlt, FaBuilding, FaMapMarkerAlt, FaPhoneAlt, FaHandPaper, FaInfoCircle, FaTimes, FaInbox, FaHourglassHalf } from 'react-icons/fa';
+import { getAvailableListings, claimListing } from '../services/listingService';
+import MessageUserButton from '../components/MessageUserButton';
 
 function AvailableListings() {
   const [listings, setListings] = useState([]);
@@ -14,29 +16,8 @@ function AvailableListings() {
     const fetchAvailableListings = async () => {
       setLoading(true);
       setError('');
-      const token = localStorage.getItem('ngoToken');
-
-      if (!token) {
-        setError('Authentication token not found. Please log in again.');
-        setLoading(false);
-        return;
-      }
-
       try {
-        const response = await fetch('/api/foodlistings', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ message: 'Failed to fetch available listings.' }));
-          throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await getAvailableListings();
         setListings(data);
       } catch (err) {
         console.error("Error fetching available listings:", err);
@@ -90,26 +71,8 @@ function AvailableListings() {
 
     setError('');
     setClaimNotification(null);
-    const token = localStorage.getItem('ngoToken');
-
-    if (!token) {
-      setError('Authentication token not found. Please log in again.');
-      return;
-    }
-
     try {
-      const response = await fetch(`/api/foodlistings/${listingId}/claim`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Failed to claim the listing.' }));
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-      }
-
+      await claimListing(listingId);
       setListings(prevListings => prevListings.filter(l => l._id !== listingId));
       setClaimNotification({
         itemName: claimedListingDetails.itemName,
@@ -118,7 +81,7 @@ function AvailableListings() {
       });
     } catch (err) {
       console.error("Error claiming listing:", err);
-      setError(err.message || 'Failed to claim listing. Please try again.');
+      setError(err.response?.data?.message || err.message || 'Failed to claim listing. Please try again.');
     }
   };
 
@@ -255,6 +218,14 @@ function AvailableListings() {
                     >
                       <FaHandPaper /> Claim Donation
                     </button>
+                    {listing.restaurant?._id && (
+                      <MessageUserButton
+                        userId={listing.restaurant._id}
+                        userName={listing.restaurant.name}
+                        listingId={listing._id}
+                        className={styles.messageButton}
+                      />
+                    )}
                   </div>
                 </div>
               );

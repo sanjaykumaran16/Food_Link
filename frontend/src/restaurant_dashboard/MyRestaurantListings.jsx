@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import styles from './MyRestaurantListings.module.css'; // Create this CSS module
+import styles from './MyRestaurantListings.module.css';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-import EditListingModal from './EditListingModal'; // Import the modal component
+import EditListingModal from './EditListingModal';
+import { getMyListings, deleteListing } from '../services/listingService';
+import MessageUserButton from '../components/MessageUserButton';
 
 function MyRestaurantListings() {
   const [listings, setListings] = useState([]);
@@ -13,32 +15,11 @@ function MyRestaurantListings() {
     const fetchListings = async () => {
       setLoading(true);
       setError('');
-      const token = localStorage.getItem('restaurantToken'); // Retrieve the token
-
-      if (!token) {
-        setError('Authentication token not found. Please log in again.');
-        setLoading(false);
-        return;
-      }
-
       try {
-        const response = await fetch('/api/foodlistings/myListings', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`, // Send the token in the header
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ message: 'Failed to fetch listings. Server returned an error.' }));
-          throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await getMyListings();
         const listingsWithDate = data.map(listing => ({
             ...listing,
-            listedAtDate: new Date(listing.listedAt) 
+            listedAtDate: new Date(listing.listedAt || listing.createdAt)
         }));
         setListings(listingsWithDate);
       } catch (err) {
@@ -104,34 +85,12 @@ function MyRestaurantListings() {
 
     setError(''); // Clear previous errors
 
-    const token = localStorage.getItem('restaurantToken');
-    if (!token) {
-      setError('Authentication error. Please log in again.');
-      return;
-    }
-
     try {
-      const response = await fetch(`/api/foodlistings/${listingId}`, { 
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-      });
-
-      // Check if the delete operation itself was successful (e.g., 200 OK or 204 No Content)
-      if (!response.ok) {
-          // Try to get error message from response body
-          const errorData = await response.json().catch(() => ({ message: 'Failed to delete listing. Server returned an error.' }));
-          throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-      }
-
-      // If successful, remove the listing from the local state
+      await deleteListing(listingId);
       setListings(currentListings => currentListings.filter(l => l._id !== listingId));
-
     } catch (err) {
        console.error("Error deleting listing:", err);
-       // Display error message to the user
-       setError(err.message || "Failed to delete listing. Please check your connection or try again."); 
+       setError(err.response?.data?.message || err.message || "Failed to delete listing. Please try again.");
     }
   };
 
@@ -202,6 +161,14 @@ function MyRestaurantListings() {
                         : 'Not Collected Yet'}
                     </td>
                     <td className={styles.actionsCell}>
+                      {listing.collectedByNgo?._id && (
+                        <MessageUserButton
+                          userId={listing.collectedByNgo._id}
+                          userName={listing.collectedByNgo.name}
+                          listingId={listing._id}
+                          className={styles.messageBtn}
+                        />
+                      )}
                       <button
                         className={`${styles.actionButton} ${styles.editButton} ${!canEdit ? styles.disabledButton : ''}`}
                         onClick={() => canEdit && handleEdit(listing._id)}

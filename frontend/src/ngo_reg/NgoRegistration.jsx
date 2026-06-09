@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import styles from './NgoRegistration.module.css'; // We'll create this CSS module next
-import { FaBuilding, FaEnvelope, FaLock, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'; // Import icons
+import styles from './NgoRegistration.module.css';
+import { FaBuilding, FaEnvelope, FaLock, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa';
+import { registerLegacy } from '../services/authService';
 // import { useNavigate } from 'react-router-dom';
 
 function NgoRegistration() {
@@ -37,40 +38,8 @@ function NgoRegistration() {
       setError('Password must be at least 6 characters long.');
       return;
     }
-    const apiUrl = '/api/ngos/register';
-    
-    // Prepare data matching the backend schema (currently placeholder uses form data directly)
-    const registrationData = {
-        name, 
-        email, 
-        password, 
-        address, 
-        contactNumber 
-        // Add other fields like mission if they are in your final NGO model
-    };
-
     try {
-      const response = await fetch(apiUrl, { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registrationData),
-      });
-
-      // Safely parse JSON — guards against empty or non-JSON responses
-      let data;
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        data = await response.json();
-      } else {
-        const text = await response.text();
-        data = { message: text || 'Unexpected server response' };
-      }
-
-      if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
-      }
-
-      // Handle successful registration
+      await registerLegacy('ngo', { name, email, password, address, contactNumber });
       setSuccess('Registration successful! You can now log in.');
       setFormData({
         name: '', contact_person: '', email: '', phone: '', address: '', password: '', contactNumber: ''

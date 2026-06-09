@@ -1,0 +1,16 @@
+{
+  "appName": "Food Link",
+  "home": "Home",
+  "login": "Login",
+  "register": "Register",
+  "dashboard": "Dashboard",
+  "browse": "Browse Map",
+  "claims": "My Claims",
+  "messages": "Messages",
+  "tasks": "Delivery Tasks",
+  "analytics": "Analytics",
+  "profile": "Profile",
+  "notifications": "Notifications",
+  "impact": "Our Impact",
+  "volunteer": "Volunteer"
+}

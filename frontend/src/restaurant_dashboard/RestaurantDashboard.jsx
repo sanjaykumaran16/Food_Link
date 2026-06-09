@@ -22,7 +22,6 @@ function RestaurantDashboard() {
   const [dataError, setDataError] = useState('');
   const [showLoginNotification, setShowLoginNotification] = useState(true); // State to control login notification visibility
 
-  // Fetch dashboard data on component mount
   useEffect(() => {
     const fetchData = async () => {
       setIsLoadingData(true);
@@ -36,9 +35,8 @@ function RestaurantDashboard() {
       }
 
       try {
-        // Fetch restaurant details including the new listingCounts
-        const response = await fetch('/api/restaurants/me', { 
-          headers: { 'Authorization': `Bearer ${token}` }
+        const response = await fetch('/api/restaurants/me', {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!response.ok) {
@@ -46,16 +44,11 @@ function RestaurantDashboard() {
           throw new Error(errorData.message || 'Could not load your dashboard.');
         }
         const data = await response.json();
-        
-        // Log the received data to check counts
-        console.log("Received dashboard data:", data);
 
-        setRestaurantDetails(data); // Includes name, email etc.
-        if (data.listingCounts) {
-            setListingCounts(data.listingCounts); // Set the counts state
-        }
-        // setListingsCount(data.listingCounts.collected + data.listingCounts.available + data.listingCounts.expired); // If total count is still needed
-
+        setRestaurantDetails(data);
+        setListingCounts(
+          data.listingCounts || { collected: 0, available: 0, expired: 0 }
+        );
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
         setDataError(err.message || 'Could not load your dashboard.');
@@ -65,7 +58,10 @@ function RestaurantDashboard() {
     };
 
     fetchData();
-  }, []); // Runs once on mount
+    const onFocus = () => fetchData();
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, []);
 
   const unreadCount = restaurantDetails?.unreadNotificationCount || 0;
 

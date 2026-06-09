@@ -32,6 +32,18 @@ import FoodListingsAdmin from './admin/FoodListingsAdmin';
 import AddNgoAdmin from './admin/AddNgoAdmin';
 import ThemeToggle from './components/ThemeToggle';
 import Footer from './components/Footer';
+import LanguageSwitcher from './components/LanguageSwitcher';
+import BrowseMapPage from './ngo_dashboard/BrowseMapPage';
+import NgoClaimsPage from './ngo_dashboard/NgoClaimsPage';
+import VolunteerDashboard from './volunteer_dashboard/VolunteerDashboard';
+import VolunteerLogin from './volunteer_login/VolunteerLogin';
+import VolunteerRegistration from './volunteer_reg/VolunteerRegistration';
+import MessagesPage from './messages/MessagesPage';
+import ProfilePage from './profile/ProfilePage';
+import RestaurantAnalytics from './restaurant_dashboard/RestaurantAnalytics';
+import ListingPhotoUpload from './foodlisting/ListingPhotoUpload';
+import AdminAnalytics from './admin/AdminAnalytics';
+import { getMe } from './services/authService';
 
 import './App.css';
 
@@ -111,41 +123,26 @@ function Layout() {
   };
 
   const showHamburger = location.pathname.startsWith('/restaurant/dashboard') || 
-                        location.pathname.startsWith('/ngo/dashboard');
+                        location.pathname.startsWith('/ngo/dashboard') ||
+                        location.pathname.startsWith('/volunteer/dashboard');
   
   let userType = null;
   if (location.pathname.startsWith('/restaurant/dashboard')) {
       userType = 'restaurant';
   } else if (location.pathname.startsWith('/ngo/dashboard')) {
       userType = 'ngo';
+  } else if (location.pathname.startsWith('/volunteer/dashboard')) {
+      userType = 'volunteer';
   }
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-        let token = null;
-        let apiPath = null;
-
-        if(userType === 'restaurant') {
-            token = localStorage.getItem('restaurantToken');
-            apiPath = '/api/restaurants/me';
-        } else if (userType === 'ngo') {
-            token = localStorage.getItem('ngoToken');
-            apiPath = '/api/ngos/me';
-        }
-
-        if (token && apiPath) {
+        if (userType && (localStorage.getItem('accessToken') || localStorage.getItem(`${userType}Token`))) {
             setIsLoadingUser(true);
             try {
-                const response = await fetch(apiPath, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setCurrentUser({...data, type: userType});
-                } else {
-                    console.error('Failed to fetch user details:', response.status);
-                    setCurrentUser(null);
-                }
+                const data = await getMe();
+                setCurrentUser({ ...data, type: data.role || userType, contactNumber: data.phone });
+                localStorage.setItem('userId', data._id);
             } catch (error) {
                 console.error('Error fetching user details:', error);
                 setCurrentUser(null);
@@ -175,14 +172,13 @@ function Layout() {
   const handleLogout = () => {
     console.log("Logging out..."); 
     const userType = currentUser?.type; 
-    if (userType === 'ngo') {
-        localStorage.removeItem('ngoToken');
-    } else if (userType === 'restaurant') {
-        localStorage.removeItem('restaurantToken');
-    } else {
-      localStorage.removeItem('restaurantToken'); 
-      localStorage.removeItem('ngoToken');
-    }
+    if (userType === 'ngo') localStorage.removeItem('ngoToken');
+    else if (userType === 'restaurant') localStorage.removeItem('restaurantToken');
+    else if (userType === 'volunteer') localStorage.removeItem('volunteerToken');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userId');
     setCurrentUser(null);
     navigate('/'); 
   };
@@ -219,6 +215,7 @@ function Layout() {
             {showHamburger && !isLoadingUser && currentUser && (
                 <ProfileDropdown user={currentUser} onLogout={handleLogout} />
             )}
+            <LanguageSwitcher />
             <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
             {showHamburger && isLoadingUser && (
                 <div className="navbarLoading">...</div> 
@@ -246,10 +243,24 @@ function Layout() {
               
               <Route path="/ngo/dashboard" element={<AnimatedRoute><NgoDashboard /></AnimatedRoute>} />
               <Route path="/ngo/dashboard/available" element={<AnimatedRoute><AvailableListings /></AnimatedRoute>} />
-              
+              <Route path="/ngo/dashboard/browse" element={<AnimatedRoute><BrowseMapPage /></AnimatedRoute>} />
+              <Route path="/ngo/dashboard/claims" element={<AnimatedRoute><NgoClaimsPage /></AnimatedRoute>} />
+              <Route path="/ngo/dashboard/messages" element={<AnimatedRoute><MessagesPage /></AnimatedRoute>} />
+
+              <Route path="/restaurant/dashboard/analytics" element={<AnimatedRoute><RestaurantAnalytics /></AnimatedRoute>} />
+              <Route path="/restaurant/dashboard/messages" element={<AnimatedRoute><MessagesPage /></AnimatedRoute>} />
+              <Route path="/restaurant/dashboard/photos" element={<AnimatedRoute><ListingPhotoUpload /></AnimatedRoute>} />
+
+              <Route path="/volunteer/login" element={<AnimatedRoute><VolunteerLogin /></AnimatedRoute>} />
+              <Route path="/volunteer/register" element={<AnimatedRoute><VolunteerRegistration /></AnimatedRoute>} />
+              <Route path="/volunteer/dashboard" element={<AnimatedRoute><VolunteerDashboard /></AnimatedRoute>} />
+
+              <Route path="/profile" element={<AnimatedRoute><ProfilePage /></AnimatedRoute>} />
+
               <Route path="/admin/add-restaurant" element={<AnimatedRoute><AddRestaurantAdmin /></AnimatedRoute>} />
               <Route path="/admin/food-listings" element={<AnimatedRoute><FoodListingsAdmin /></AnimatedRoute>} />
               <Route path="/admin/add-ngo" element={<AnimatedRoute><AddNgoAdmin /></AnimatedRoute>} />
+              <Route path="/admin/analytics" element={<AnimatedRoute><AdminAnalytics /></AnimatedRoute>} />
 
               <Route path="*" element={<AnimatedRoute><div><h2>404 Not Found</h2></div></AnimatedRoute>} />
             </Routes>

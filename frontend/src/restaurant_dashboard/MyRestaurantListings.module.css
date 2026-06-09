@@ -151,6 +151,26 @@
 .actionsCell {
   text-align: center;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.messageBtn {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--accent-primary, #2d6a4f);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--accent-primary, #2d6a4f);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.messageBtn:hover {
+  background: var(--accent-primary, #2d6a4f);
+  color: #fff;
 }
 
 .actionButton {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './RestaurantRegistration.module.css';
 import { FaUtensils, FaEnvelope, FaLock, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa';
+import { registerLegacy } from '../services/authService';
 
 function RestaurantRegistration() {
   // const navigate = useNavigate(); // Uncomment if using react-router navigation
@@ -39,27 +40,7 @@ function RestaurantRegistration() {
     }
 
     try {
-      const response = await fetch('/api/restaurants/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData), // Send all form data
-      });
-
-      // Safely parse JSON — guards against empty or non-JSON responses
-      let data;
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        data = await response.json();
-      } else {
-        const text = await response.text();
-        data = { message: text || 'Unexpected server response' };
-      }
-
-      if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
-      }
-
-      // Handle successful registration
+      await registerLegacy('restaurant', formData);
       setSuccess('Restaurant registered successfully! You can now log in.');
       setFormData({ name: '', email: '', password: '', address: '', contactNumber: '' });
       

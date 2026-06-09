@@ -22,32 +22,17 @@ function NgoDashboard() {
       }
 
       try {
-        // Fetch NGO details and received listings count in parallel
-        const [detailsResponse, receivedResponse] = await Promise.all([
-          fetch('/api/ngos/me', { // Fetch NGO details
-            headers: { 'Authorization': `Bearer ${token}` }
-          }),
-          fetch('/api/foodlistings/myReceived', { // Fetch received listings
-            headers: { 'Authorization': `Bearer ${token}` }
-          })
-        ]);
+        const detailsResponse = await fetch('/api/ngos/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        // Process details response
         if (!detailsResponse.ok) {
           const detailsErrorData = await detailsResponse.json().catch(() => ({}));
           throw new Error(detailsErrorData.message || 'Failed to fetch NGO details.');
         }
         const detailsData = await detailsResponse.json();
         setNgoDetails(detailsData);
-
-        // Process received listings response
-        if (!receivedResponse.ok) {
-            const receivedErrorData = await receivedResponse.json().catch(() => ({}));
-            throw new Error(receivedErrorData.message || 'Failed to fetch received donations count.');
-        }
-        const receivedData = await receivedResponse.json();
-        setReceivedCount(receivedData.length); // Get count from array length
-
+        setReceivedCount(detailsData.receivedCount ?? 0);
       } catch (err) {
         console.error('Error fetching NGO dashboard data:', err);
         setDataError(err.message || 'Failed to load dashboard data.');

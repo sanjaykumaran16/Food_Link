@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-// Import the dedicated CSS module
 import styles from './AddFoodListing.module.css';
+import { createListing } from '../services/listingService';
 
 function AddFoodListing() {
   // State specifically for the form
@@ -23,29 +23,8 @@ function AddFoodListing() {
       return;
     }
 
-    const token = localStorage.getItem('restaurantToken');
-    if (!token) {
-      setFormError('Authentication error. Please log in again.');
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
-      const response = await fetch('/api/foodlistings', { // Endpoint to POST new listing
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ itemName, quantity, expiryDate }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
-      }
-
+      await createListing({ itemName, quantity, expiryDate });
       setFormSuccess('Food listing added successfully!');
       // Clear the form
       setItemName('');
@@ -55,7 +34,7 @@ function AddFoodListing() {
 
     } catch (err) {
       console.error('Error submitting food listing:', err);
-      setFormError(err.message || 'Failed to add food listing. Please try again.');
+      setFormError(err.response?.data?.message || err.message || 'Failed to add food listing. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

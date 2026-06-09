@@ -1,0 +1,20 @@
+.switcher {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.switcher button {
+  border: 1px solid var(--card-border, #ddd);
+  background: var(--card-bg, #fff);
+  color: var(--text-primary, #333);
+  padding: 0.2rem 0.45rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.switcher button.active {
+  background: var(--primary-color, #2d6a4f);
+  color: #fff;
+  border-color: var(--primary-color, #2d6a4f);
+}
