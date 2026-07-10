@@ -3,8 +3,8 @@ const { isValidCoords } = require('./geoHelpers');
 const cache = new Map();
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
 
-const buildAddressQuery = ({ address, city, pincode, name }) =>
-  [address, city, pincode, name, 'India'].filter(Boolean).join(', ');
+const buildAddressQuery = ({ address, city, pincode }) =>
+  [address, city, pincode, 'India'].filter(Boolean).join(', ');
 
 const geocodeAddress = async (query) => {
   const key = query.trim().toLowerCase();

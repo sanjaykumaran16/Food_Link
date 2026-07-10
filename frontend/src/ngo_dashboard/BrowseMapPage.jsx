@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import styles from './BrowseMapPage.module.css';
 import { getNearbyListings, getNearbyRestaurants, getNgoMapLocation, claimListing } from '../services/listingService';
 import MessageUserButton from '../components/MessageUserButton';
+import MatchScoreBadge from '../components/MatchScoreBadge';
 
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -39,19 +40,23 @@ function BrowseMapPage() {
   const [center, setCenter] = useState([28.6139, 77.209]);
   const [radiusKm, setRadiusKm] = useState(15);
   const [locationSource, setLocationSource] = useState('default');
+  const [searchCityQuery, setSearchCityQuery] = useState('');
 
   useEffect(() => {
     const resolveCenter = async () => {
-      try {
-        const ngoLoc = await getNgoMapLocation();
-        if (ngoLoc?.lat && ngoLoc?.lng) {
-          setCenter([ngoLoc.lat, ngoLoc.lng]);
-          setLocationSource('profile');
-          return;
+      const fallbackToProfile = async () => {
+        try {
+          const ngoLoc = await getNgoMapLocation();
+          if (ngoLoc?.lat && ngoLoc?.lng) {
+            setCenter([ngoLoc.lat, ngoLoc.lng]);
+            setLocationSource('profile');
+          } else {
+            setLocationSource('default');
+          }
+        } catch {
+          setLocationSource('default');
         }
-      } catch {
-        /* fall through to browser geolocation */
-      }
+      };
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -59,8 +64,18 @@ function BrowseMapPage() {
             setCenter([pos.coords.latitude, pos.coords.longitude]);
             setLocationSource('device');
           },
-          () => setLocationSource('default')
+          (err) => {
+            console.warn('Initial geolocation failed, falling back to profile address:', err);
+            fallbackToProfile();
+          },
+          {
+            enableHighAccuracy: false,
+            timeout: 8000,
+            maximumAge: 120000
+          }
         );
+      } else {
+        fallbackToProfile();
       }
     };
     resolveCenter();
@@ -107,6 +122,68 @@ function BrowseMapPage() {
     }
   };
 
+  const handleSearchCity = async (e) => {
+    e.preventDefault();
+    if (!searchCityQuery.trim()) return;
+    setError('');
+    setSuccess('');
+    try {
+      const params = new URLSearchParams({
+        q: searchCityQuery.trim(),
+        format: 'json',
+        limit: '1',
+        countrycodes: 'in',
+      });
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
+        headers: { 'User-Agent': 'FoodLink/1.0 (food donation platform)' },
+      });
+      if (!res.ok) throw new Error('Failed to fetch city coordinates');
+      const data = await res.json();
+      if (!data?.length) {
+        setError(`City "${searchCityQuery}" not found. Please try a different query.`);
+        return;
+      }
+      const lat = parseFloat(data[0].lat);
+      const lon = parseFloat(data[0].lon);
+      setCenter([lat, lon]);
+      setLocationSource('search');
+      setSuccess(`Map centered on ${data[0].display_name}`);
+    } catch (err) {
+      setError(err.message || 'Error searching for city coordinates.');
+    }
+  };
+
+  const handleLocateMe = () => {
+    setError('');
+    setSuccess('');
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported in this browser or context (requires HTTPS/localhost).');
+      return;
+    }
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCenter([pos.coords.latitude, pos.coords.longitude]);
+        setLocationSource('device');
+        setSuccess('Location scanned successfully.');
+        setLoading(false);
+      },
+      (err) => {
+        setLoading(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          setError('Location access denied. Please enable location permissions for this site in your browser settings.');
+        } else {
+          setError(err.message || 'Failed to detect location.');
+        }
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 8000,
+        maximumAge: 0,
+      }
+    );
+  };
+
   const validListings = useMemo(
     () =>
       listings.filter((l) => {
@@ -121,7 +198,9 @@ function BrowseMapPage() {
       ? 'Centered on your NGO address'
       : locationSource === 'device'
         ? 'Centered on your device location'
-        : 'Using default map center — update your profile address for accuracy';
+        : locationSource === 'search'
+          ? 'Centered on your searched location'
+          : 'Using default map center — update your profile address for accuracy';
 
   return (
     <div className={styles.page}>
@@ -130,16 +209,35 @@ function BrowseMapPage() {
           <h2>Browse Nearby Donations</h2>
           <p className={styles.subtitle}>{locationLabel}</p>
         </div>
-        <label className={styles.radiusControl}>
-          Radius: {radiusKm} km
-          <input
-            type="range"
-            min="5"
-            max="50"
-            value={radiusKm}
-            onChange={(e) => setRadiusKm(Number(e.target.value))}
-          />
-        </label>
+        <div className={styles.controlsRow}>
+          <button
+            type="button"
+            className={styles.locateBtn}
+            onClick={handleLocateMe}
+          >
+            📍 Scan Location
+          </button>
+          <form onSubmit={handleSearchCity} className={styles.searchCityForm}>
+            <input
+              type="text"
+              placeholder="Search city (e.g. Tiruvannamalai)"
+              value={searchCityQuery}
+              onChange={(e) => setSearchCityQuery(e.target.value)}
+              className={styles.searchCityInput}
+            />
+            <button type="submit" className={styles.searchCityBtn}>Search</button>
+          </form>
+          <label className={styles.radiusControl}>
+            Radius: {radiusKm} km
+            <input
+              type="range"
+              min="5"
+              max="100"
+              value={radiusKm}
+              onChange={(e) => setRadiusKm(Number(e.target.value))}
+            />
+          </label>
+        </div>
       </header>
 
       {error && <p className={styles.error}>{error}</p>}
@@ -168,6 +266,7 @@ function BrowseMapPage() {
                     {s.listings.slice(0, 3).map((l) => (
                       <li key={l._id}>
                         {l.itemName || l.title} — {l.quantity} servings
+                        {l.matchScore != null && ` · ${l.matchScore}% match`}
                       </li>
                     ))}
                   </ul>
@@ -210,7 +309,7 @@ function BrowseMapPage() {
                       <strong>{l.itemName || l.title}</strong>
                       <p>{restaurant?.name}</p>
                       <p>{l.pickupAddress || restaurant?.address}</p>
-                      {l.distanceKm != null && <p>{l.distanceKm} km away</p>}
+                      <MatchScoreBadge listing={l} />
                       <div className={styles.popupActions}>
                         <button type="button" onClick={() => handleClaim(l._id)}>Claim</button>
                         {restaurant?._id && (

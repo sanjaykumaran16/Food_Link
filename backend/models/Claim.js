@@ -23,6 +23,22 @@ const claimSchema = new mongoose.Schema(
       default: 'claimed',
     },
     proofPhoto: { type: String, default: '' },
+    pickupSafetyConfirmation: {
+      receivedInSafeCondition: { type: Boolean, default: false },
+      tempVerified: { type: Boolean, default: false },
+      packagingIntact: { type: Boolean, default: false },
+      withinTimeLimit: { type: Boolean, default: false },
+      notes: { type: String, default: '' },
+      confirmedAt: { type: Date, default: null },
+      confirmedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    },
+    deliverySafetyConfirmation: {
+      distributedSafely: { type: Boolean, default: false },
+      recipientsInformed: { type: Boolean, default: false },
+      notes: { type: String, default: '' },
+      confirmedAt: { type: Date, default: null },
+      confirmedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    },
     timeline: [
       {
         status: { type: String, required: true },

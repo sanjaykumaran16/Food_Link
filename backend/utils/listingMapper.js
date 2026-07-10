@@ -21,6 +21,15 @@ const mapListingForClient = (listing) => {
     collectedByNgo: claimedBy,
     status: normalizeStatus(doc.status),
     address: doc.pickupAddress || doc.address,
+    matchScore: doc.matchScore,
+    urgencyScore: doc.urgencyScore,
+    urgencyLevel: doc.urgencyLevel,
+    matchBreakdown: doc.matchBreakdown,
+    distanceKm: doc.distanceKm,
+    safetyStatus: doc.safetyStatus,
+    safetyWarnings: doc.safetyWarnings || [],
+    storageTemp: doc.storageTemp,
+    preparedAt: doc.preparedAt,
   };
 };
 

@@ -11,6 +11,8 @@ const { mapListingForClient } = require('../utils/listingMapper');
 const { createNotification } = require('../utils/notifications');
 const { geocodeUser } = require('../utils/geocode');
 const { isValidCoords } = require('../utils/geoHelpers');
+const { normalizeChecklist, evaluateListingSafety } = require('../utils/foodSafety');
+const { getNgoMatchingContext, enrichListingsWithScores } = require('../utils/matchingEngine');
 
 const router = express.Router();
 
@@ -45,6 +47,15 @@ const parseLegacyBody = async (body, user) => {
       type: 'Point',
       coordinates: isValidCoords(coordinates) ? coordinates : [0, 0],
     },
+    safetyChecklist: (() => {
+      let raw = body.safetyChecklist;
+      if (typeof raw === 'string') {
+        try { raw = JSON.parse(raw); } catch { raw = {}; }
+      }
+      return normalizeChecklist(raw);
+    })(),
+    preparedAt: body.preparedAt ? new Date(body.preparedAt) : null,
+    storageTemp: body.storageTemp || 'ambient',
   };
 };
 
@@ -54,8 +65,27 @@ router.post('/', auth, role('restaurant'), asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Please provide itemName, quantity, and expiryDate');
   }
+
+  const safety = evaluateListingSafety(data);
+  if (!safety.canPublish) {
+    res.status(400);
+    throw new Error(safety.errors.join(' ') || 'Food safety requirements not met.');
+  }
+
   const listing = await FoodListing.create({
     ...data,
+    safetyChecklist: safety.checklist,
+    safetyStatus: safety.safetyStatus,
+    safetyWarnings: safety.warnings,
+    safetyVerifiedAt: new Date(),
+    safetyAuditLog: [
+      {
+        action: 'published',
+        by: req.user._id,
+        at: new Date(),
+        note: 'Safety checklist verified at publish',
+      },
+    ],
     postedBy: req.user._id,
     status: 'available',
   });
@@ -66,10 +96,19 @@ router.get('/', auth, role('ngo'), asyncHandler(async (req, res) => {
   const listings = await FoodListing.find({
     status: 'available',
     expiresAt: { $gte: new Date() },
+    safetyStatus: 'verified',
   })
     .populate('postedBy', 'name address phone contactNumber')
-    .sort({ expiresAt: 1 });
-  res.json(listings.map(mapListingForClient));
+    .limit(100);
+
+  const context = await getNgoMatchingContext(req.user);
+  const scored = enrichListingsWithScores(
+    listings,
+    req.user,
+    context,
+    req.user.location?.coordinates
+  );
+  res.json(scored.map(mapListingForClient));
 }));
 
 router.get('/myListings', auth, role('restaurant'), asyncHandler(async (req, res) => {
@@ -98,6 +137,10 @@ router.put('/:id/claim', auth, role('ngo'), asyncHandler(async (req, res) => {
   if (listing.status !== 'available') {
     res.status(400);
     throw new Error('Listing is no longer available.');
+  }
+  if (listing.safetyStatus !== 'verified') {
+    res.status(400);
+    throw new Error('Listing has not passed food safety verification.');
   }
 
   await Claim.create({

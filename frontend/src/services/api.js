@@ -10,8 +10,7 @@ const api = axios.create({
 export const getStoredToken = () =>
   localStorage.getItem('accessToken') ||
   localStorage.getItem('restaurantToken') ||
-  localStorage.getItem('ngoToken') ||
-  localStorage.getItem('volunteerToken');
+  localStorage.getItem('ngoToken');
 
 export const storeAuth = ({ accessToken, refreshToken, role, legacyToken, userId }) => {
   if (accessToken) localStorage.setItem('accessToken', accessToken);
@@ -24,7 +23,6 @@ export const storeAuth = ({ accessToken, refreshToken, role, legacyToken, userId
   if (legacyToken) {
     if (role === 'restaurant') localStorage.setItem('restaurantToken', legacyToken);
     if (role === 'ngo') localStorage.setItem('ngoToken', legacyToken);
-    if (role === 'volunteer') localStorage.setItem('volunteerToken', legacyToken);
   }
   const token = accessToken || legacyToken;
   if (role === 'restaurant' && token) localStorage.setItem('restaurantToken', token);
@@ -32,7 +30,7 @@ export const storeAuth = ({ accessToken, refreshToken, role, legacyToken, userId
 };
 
 export const clearAuth = () => {
-  ['accessToken', 'refreshToken', 'userRole', 'restaurantToken', 'ngoToken', 'volunteerToken'].forEach(
+  ['accessToken', 'refreshToken', 'userRole', 'restaurantToken', 'ngoToken'].forEach(
     (k) => localStorage.removeItem(k)
   );
 };

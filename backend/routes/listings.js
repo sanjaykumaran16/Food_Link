@@ -9,6 +9,15 @@ const { mapListingForClient } = require('../utils/listingMapper');
 const { createNotification } = require('../utils/notifications');
 const { geocodeUser, geocodeListing } = require('../utils/geocode');
 const { haversineKm, isValidCoords } = require('../utils/geoHelpers');
+const {
+  normalizeChecklist,
+  evaluateListingSafety,
+  appendAuditEntry,
+} = require('../utils/foodSafety');
+const {
+  getNgoMatchingContext,
+  enrichListingsWithScores,
+} = require('../utils/matchingEngine');
 
 const router = express.Router();
 
@@ -16,6 +25,21 @@ const parseQuantity = (value) => {
   if (typeof value === 'number' && !Number.isNaN(value)) return value;
   const match = String(value || '').match(/[\d.]+/);
   return match ? Number(match[0]) : 0;
+};
+
+const ensureAllListingsGeocoded = async () => {
+  const ungeocoded = await FoodListing.find({
+    status: 'available',
+    expiresAt: { $gte: new Date() },
+    safetyStatus: 'verified',
+    $or: [
+      { location: { $exists: false } },
+      { 'location.coordinates': [0, 0] }
+    ]
+  });
+  for (const listing of ungeocoded) {
+    await geocodeListing(listing);
+  }
 };
 
 const parseLegacyBody = (body, user) => {
@@ -49,7 +73,34 @@ const parseLegacyBody = (body, user) => {
     pickupWindowEnd,
     expiresAt: expiresAt ? new Date(expiresAt) : pickupWindowEnd,
     safetyChecklist: body.safetyChecklist || {},
+    preparedAt: body.preparedAt ? new Date(body.preparedAt) : null,
+    storageTemp: body.storageTemp || 'ambient',
     templateId: body.templateId || null,
+  };
+};
+
+const buildSafeListingData = (listingData, userId) => {
+  const safety = evaluateListingSafety(listingData);
+  if (!safety.canPublish) {
+    return { ok: false, errors: safety.errors };
+  }
+  return {
+    ok: true,
+    data: {
+      ...listingData,
+      safetyChecklist: safety.checklist,
+      safetyStatus: safety.safetyStatus,
+      safetyWarnings: safety.warnings,
+      safetyVerifiedAt: new Date(),
+      safetyAuditLog: [
+        {
+          action: 'published',
+          by: userId,
+          at: new Date(),
+          note: 'Safety checklist verified at publish',
+        },
+      ],
+    },
   };
 };
 
@@ -74,10 +125,21 @@ router.post(
     if (typeof req.body.safetyChecklist === 'string') {
       try { safetyChecklist = JSON.parse(req.body.safetyChecklist); } catch { /* ignore */ }
     }
+    data.safetyChecklist = normalizeChecklist(safetyChecklist);
+    if (req.body.preparedAt) data.preparedAt = new Date(req.body.preparedAt);
+    if (req.body.storageTemp) data.storageTemp = req.body.storageTemp;
+
     if (!data.title || !data.quantity) {
       res.status(400);
       throw new Error('Please provide title/itemName and quantity');
     }
+
+    const safetyResult = buildSafeListingData(data, req.user._id);
+    if (!safetyResult.ok) {
+      res.status(400);
+      throw new Error(safetyResult.errors.join(' ') || 'Food safety requirements not met.');
+    }
+    const safeData = safetyResult.data;
 
     let photos = [];
     try {
@@ -95,12 +157,13 @@ router.post(
     }
 
     const listing = await FoodListing.create({
-      ...data,
+      ...safeData,
       postedBy: req.user._id,
       photos,
-      safetyChecklist,
       status: 'available',
     });
+
+    await geocodeListing(listing);
 
     const User = require('../models/User');
     const io = req.app.get('io');
@@ -125,22 +188,111 @@ router.get(
   '/',
   auth,
   asyncHandler(async (req, res) => {
-    const { city, category, status } = req.query;
+    const { city, category, status, allergens, pickupAfter, pickupBefore, minQty, maxQty, sortBy } = req.query;
+
     const filter = {};
-    if (city) filter.city = new RegExp(city, 'i');
-    if (category) filter.category = category;
-    if (status) filter.status = status;
-    else if (req.user.role === 'ngo') {
+
+    // Base NGO defaults
+    if (!status && req.user.role === 'ngo') {
       filter.status = 'available';
       filter.expiresAt = { $gte: new Date() };
+      filter.safetyStatus = 'verified';
+    } else if (status) {
+      filter.status = status;
     }
+
+    // City filter (case-insensitive)
+    if (city && city.trim()) filter.city = new RegExp(city.trim(), 'i');
+
+    // Category filter
+    if (category && category !== 'all') filter.category = category;
+
+    // Allergen exclusion — exclude listings that contain ANY of the specified allergens
+    if (allergens) {
+      const allergenList = allergens.split(',').map((a) => a.trim().toLowerCase()).filter(Boolean);
+      if (allergenList.length > 0) {
+        filter.allergens = { $nin: allergenList };
+      }
+    }
+
+    // Pickup window filters
+    if (pickupAfter) {
+      filter.pickupWindowStart = { ...filter.pickupWindowStart, $gte: new Date(pickupAfter) };
+    }
+    if (pickupBefore) {
+      filter.pickupWindowEnd = { ...filter.pickupWindowEnd, $lte: new Date(pickupBefore) };
+    }
+
+    // Quantity range
+    if (minQty !== undefined && minQty !== '') {
+      filter.quantity = { ...filter.quantity, $gte: Number(minQty) };
+    }
+    if (maxQty !== undefined && maxQty !== '') {
+      filter.quantity = { ...filter.quantity, $lte: Number(maxQty) };
+    }
+
+    // Sort order
+    let sortOrder = { expiresAt: 1 }; // default: expiry soonest first
+    if (sortBy === 'quantity_desc') sortOrder = { quantity: -1, expiresAt: 1 };
+    else if (sortBy === 'quantity_asc') sortOrder = { quantity: 1, expiresAt: 1 };
+    else if (sortBy === 'newest') sortOrder = { createdAt: -1 };
 
     const listings = await FoodListing.find(filter)
       .populate('postedBy', 'name address phone city')
       .populate('claimedBy', 'name phone')
-      .sort({ expiresAt: 1 });
+      .sort(sortOrder);
+
+    if (req.user.role === 'ngo') {
+      const context = await getNgoMatchingContext(req.user);
+      const scored = enrichListingsWithScores(
+        listings,
+        req.user,
+        context,
+        req.user.location?.coordinates
+      );
+      return res.json(scored.map(mapListingForClient));
+    }
 
     res.json(listings.map(mapListingForClient));
+  })
+);
+
+router.get(
+  '/matched',
+  auth,
+  role('ngo'),
+  asyncHandler(async (req, res) => {
+    await ensureAllListingsGeocoded();
+    const lat = parseFloat(req.query.lat);
+    const lng = parseFloat(req.query.lng);
+    const radiusKm = parseFloat(req.query.radius) || req.user.serviceRadiusKm || 15;
+
+    let ngoCoords = req.user.location?.coordinates;
+    if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+      ngoCoords = [lng, lat];
+    }
+
+    const listings = await FoodListing.find({
+      status: 'available',
+      expiresAt: { $gte: new Date() },
+      safetyStatus: 'verified',
+    })
+      .populate('postedBy', 'name address phone city location')
+      .limit(100);
+
+    const context = await getNgoMatchingContext(req.user);
+    let scored = enrichListingsWithScores(listings, req.user, context, ngoCoords);
+
+    if (isValidCoords(ngoCoords)) {
+      const [ngoLng, ngoLat] = ngoCoords;
+      scored = scored.filter((l) => {
+        const coords = l.location?.coordinates;
+        if (!isValidCoords(coords)) return true;
+        return haversineKm(ngoLng, ngoLat, coords[0], coords[1]) <= radiusKm;
+      });
+    }
+
+    res.json(scored.map(mapListingForClient));
   })
 );
 
@@ -157,6 +309,7 @@ router.get(
   '/nearby',
   auth,
   asyncHandler(async (req, res) => {
+    await ensureAllListingsGeocoded();
     const lat = parseFloat(req.query.lat);
     const lng = parseFloat(req.query.lng);
     const radiusKm = parseFloat(req.query.radius) || 10;
@@ -168,6 +321,7 @@ router.get(
     let listings = await FoodListing.find({
       status: 'available',
       expiresAt: { $gte: new Date() },
+      safetyStatus: 'verified',
       location: {
         $near: {
           $geometry: { type: 'Point', coordinates: [lng, lat] },
@@ -182,6 +336,7 @@ router.get(
       const fallback = await FoodListing.find({
         status: 'available',
         expiresAt: { $gte: new Date() },
+        safetyStatus: 'verified',
       })
         .populate('postedBy', 'name address phone city location')
         .limit(50);
@@ -197,6 +352,17 @@ router.get(
       listings = listings.filter(
         (l) => haversineKm(lng, lat, l.location.coordinates[0], l.location.coordinates[1]) <= radiusKm
       );
+    }
+
+    if (req.user.role === 'ngo') {
+      const context = await getNgoMatchingContext(req.user);
+      const scored = enrichListingsWithScores(
+        listings.map((l) => withDistance(l, lat, lng)),
+        req.user,
+        context,
+        [lng, lat]
+      );
+      return res.json(scored.map(mapListingForClient));
     }
 
     res.json(listings.map((l) => withDistance(l, lat, lng)));
@@ -219,6 +385,7 @@ router.get(
     const listings = await FoodListing.find({
       status: 'available',
       expiresAt: { $gte: new Date() },
+      safetyStatus: 'verified',
     })
       .populate('postedBy', 'name address phone city location')
       .limit(100);
@@ -227,6 +394,7 @@ router.get(
       await geocodeListing(listing);
     }
 
+    const context = await getNgoMatchingContext(req.user);
     const byRestaurant = {};
     for (const listing of listings) {
       const coords = listing.location?.coordinates;
@@ -254,7 +422,18 @@ router.get(
           Math.round(distanceKm * 10) / 10
         );
       }
-      byRestaurant[restaurantId].listings.push(withDistance(listing, lat, lng));
+      const withDist = withDistance(listing, lat, lng);
+      byRestaurant[restaurantId].listings.push(withDist);
+    }
+
+    for (const key of Object.keys(byRestaurant)) {
+      const scored = enrichListingsWithScores(
+        byRestaurant[key].listings,
+        req.user,
+        context,
+        [lng, lat]
+      );
+      byRestaurant[key].listings = scored;
     }
 
     const suggestions = Object.values(byRestaurant)
@@ -334,10 +513,28 @@ router.put(
     if (req.body.category) listing.category = data.category;
     if (req.body.unit) listing.unit = data.unit;
 
+    let addressChanged = false;
+    if (req.body.pickupAddress != null && req.body.pickupAddress !== listing.pickupAddress) {
+      listing.pickupAddress = req.body.pickupAddress;
+      addressChanged = true;
+    }
+    if (req.body.city != null && req.body.city !== listing.city) {
+      listing.city = req.body.city;
+      addressChanged = true;
+    }
+    if (req.body.pincode != null && req.body.pincode !== listing.pincode) {
+      listing.pincode = req.body.pincode;
+      addressChanged = true;
+    }
+    if (addressChanged) {
+      listing.location = { type: 'Point', coordinates: [0, 0] };
+    }
+
     const newPhotos = await uploadPhotos(req.files);
     if (newPhotos.length) listing.photos = [...listing.photos, ...newPhotos];
 
     await listing.save();
+    await geocodeListing(listing);
     res.json(mapListingForClient(listing));
   })
 );

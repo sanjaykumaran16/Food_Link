@@ -167,3 +167,60 @@
     height: 420px;
   }
 }
+
+.controlsRow {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.searchCityForm {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.searchCityInput {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--input-border, #ccc);
+  background: var(--input-bg, #fff);
+  color: var(--text-primary, #333);
+  font-size: 0.9rem;
+  min-width: 220px;
+}
+
+.searchCityBtn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--primary-color, #2d6a4f);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.searchCityBtn:hover {
+  background: var(--primary-hover, #1b4332);
+}
+
+.locateBtn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--primary-color, #2d6a4f);
+  background: transparent;
+  color: var(--primary-color, #2d6a4f);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.locateBtn:hover {
+  background: var(--primary-color, #2d6a4f);
+  color: #fff;
+}

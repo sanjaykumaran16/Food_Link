@@ -52,7 +52,7 @@ router.get(
   '/restaurant/:id',
   auth,
   asyncHandler(async (req, res) => {
-    if (req.user._id.toString() !== req.params.id && req.user.role !== 'admin') {
+    if (req.user._id.toString() !== req.params.id) {
       res.status(403);
       throw new Error('Not authorized to view this impact data');
     }

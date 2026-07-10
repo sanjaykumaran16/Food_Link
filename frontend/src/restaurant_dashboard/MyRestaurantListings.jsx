@@ -132,6 +132,7 @@ function MyRestaurantListings() {
                 <th>Quantity</th>
                 <th>Expiry Date</th>
                 <th>Status</th>
+                <th>Safety</th>
                 <th>Listed At</th>
                 <th>Collected By NGO</th>
                 <th>Actions</th>
@@ -152,6 +153,11 @@ function MyRestaurantListings() {
                     <td>
                       <span className={`${styles.statusBadge} ${statusClass}`}>
                         {displayStatus}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={styles.safetyBadge}>
+                        {listing.safetyStatus || 'pending'}
                       </span>
                     </td>
                     <td>{formatDate(listing.listedAtDate)}</td>

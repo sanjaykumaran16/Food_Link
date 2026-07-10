@@ -1,158 +1,90 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import styles from './Sidebar.module.css';
 import { FaTimes, FaBell } from 'react-icons/fa';
 
-
 function Sidebar({ isOpen, closeSidebar, currentUser }) {
-  // Combine base class with conditional class for open state
+  const { t } = useTranslation();
   const sidebarClass = `${styles.sidebar} ${isOpen ? styles.open : ''}`;
-
-  // Determine userType from currentUser object
-  const userType = currentUser?.type; // Get type from user object (e.g., 'restaurant', 'ngo')
+  const userType = currentUser?.type;
   const unreadCount = currentUser?.unreadNotificationCount || 0;
 
-  // Determine content based on userType
   let sidebarTitle = 'Menu';
   let navLinks = null;
 
+  const lnk = (to, label, extra) => (
+    <li key={to}>
+      <NavLink
+        to={to}
+        end
+        className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
+        onClick={closeSidebar}
+      >
+        {extra}{label}
+      </NavLink>
+    </li>
+  );
+
   if (userType === 'restaurant') {
-    sidebarTitle = 'Explore Menu';
+    sidebarTitle = t('appName');
     navLinks = (
       <>
+        {lnk('/restaurant/dashboard', t('sidebar.dashboardHome'))}
+        {lnk('/restaurant/dashboard/add', t('sidebar.addListing'))}
+        {lnk('/restaurant/dashboard/listings', t('sidebar.myListings'))}
         <li>
-          {/* Add link back to main restaurant dashboard */}
-          <NavLink 
-            to="/restaurant/dashboard" 
-            className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
-            onClick={closeSidebar}
-          >
-            {/* <FaTachometerAlt className={styles.icon} /> */}
-            Dashboard Home
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            to="/restaurant/dashboard/add"
-            className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
-            onClick={closeSidebar}
-          >
-            {/* <FaPlus className={styles.icon} /> */}
-            Add Food Listing
-          </NavLink>
-        </li>
-        <li>
-          <NavLink 
-            to="/restaurant/dashboard/listings" 
-            className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
-            onClick={closeSidebar}
-          >
-             {/* <FaListAlt className={styles.icon} /> */}
-             My Listings
-          </NavLink>
-        </li>
-         <li>
           <NavLink
             to="/restaurant/dashboard/notifications"
+            end
             className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
             onClick={closeSidebar}
           >
-             <FaBell className={styles.icon} /> 
-             Notifications
-             {unreadCount > 0 && (
-                <span className={styles.notificationBadge}>{unreadCount}</span>
-             )}
+            <FaBell className={styles.icon} />
+            {t('sidebar.notifications')}
+            {unreadCount > 0 && (
+              <span className={styles.notificationBadge}>{unreadCount}</span>
+            )}
           </NavLink>
         </li>
-        <li>
-          <NavLink to="/restaurant/dashboard/analytics" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Analytics</NavLink>
-        </li>
-        <li>
-          <NavLink to="/restaurant/dashboard/photos" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Photos &amp; Safety</NavLink>
-        </li>
-        <li>
-          <NavLink to="/restaurant/dashboard/messages" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Messages</NavLink>
-        </li>
-        <li>
-          <NavLink to="/profile" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Profile</NavLink>
-        </li>
+        {lnk('/restaurant/dashboard/analytics', t('sidebar.analytics'))}
+        {lnk('/restaurant/dashboard/reviews', `⭐ ${t('sidebar.reviews')}`)}
+        {lnk('/restaurant/dashboard/photos', t('sidebar.photosSafety'))}
+        {lnk('/restaurant/dashboard/messages', t('sidebar.messages'))}
+        {lnk('/profile', t('sidebar.profile'))}
       </>
     );
   } else if (userType === 'ngo') {
-    sidebarTitle = 'NGO Menu';
+    sidebarTitle = t('appName');
     navLinks = (
       <>
-        <li>
-           <NavLink 
-             to="/ngo/dashboard" 
-             className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
-             onClick={closeSidebar}
-           >
-            {/* <FaTachometerAlt className={styles.icon} /> */}
-             Dashboard Home
-          </NavLink>
-        </li>
-        <li>
-           {/* Updated Link path for Available Listings */}
-           <NavLink 
-             to="/ngo/dashboard/available" 
-             className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
-             onClick={closeSidebar}
-            >
-            {/* <FaListAlt className={styles.icon} /> */}
-             Available Donations
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/ngo/dashboard/browse" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Map Browse</NavLink>
-        </li>
-        <li>
-          <NavLink to="/ngo/dashboard/claims" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>My Claims</NavLink>
-        </li>
-        <li>
-          <NavLink to="/ngo/dashboard/messages" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Messages</NavLink>
-        </li>
-        <li>
-          <NavLink to="/profile" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Profile</NavLink>
-        </li>
-      </>
-    );
-  } else if (userType === 'volunteer') {
-    sidebarTitle = 'Volunteer Menu';
-    navLinks = (
-      <>
-        <li>
-          <NavLink to="/volunteer/dashboard" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Delivery Tasks</NavLink>
-        </li>
-        <li>
-          <NavLink to="/profile" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink} onClick={closeSidebar}>Profile</NavLink>
-        </li>
+        {lnk('/ngo/dashboard', t('sidebar.dashboardHome'))}
+        {lnk('/ngo/dashboard/available', t('sidebar.availableDonations'))}
+        {lnk('/ngo/dashboard/browse', t('sidebar.mapBrowse'))}
+        {lnk('/ngo/dashboard/claims', t('sidebar.myClaims'))}
+        {lnk('/ngo/dashboard/messages', t('sidebar.messages'))}
+        {lnk('/profile', t('sidebar.profile'))}
       </>
     );
   }
 
-  // If no userType (e.g., on homepage where hamburger isn't shown), 
-  // sidebar might still be forced open via dev tools, so render empty or default state.
   if (!userType && isOpen) {
-     sidebarTitle = 'Menu';
-     navLinks = <li><span className={styles.navLink}>No actions available</span></li>;
+    sidebarTitle = 'Menu';
+    navLinks = <li><span className={styles.navLink}>No actions available</span></li>;
   }
 
   return (
     <>
-      {/* Optional: Overlay to click and close sidebar */}
-      {isOpen && <div className={styles.overlay} onClick={closeSidebar}></div>}
-      
+      {isOpen && <div className={styles.overlay} onClick={closeSidebar} />}
       <nav className={sidebarClass}>
         <button className={styles.closeButton} onClick={closeSidebar}>
           <FaTimes />
         </button>
-        
         <h3 className={styles.sidebarTitle}>{sidebarTitle}</h3>
         {navLinks && (
-             <ul className={styles.navList}>
-                 {navLinks}
-             </ul>
+          <ul className={styles.navList}>
+            {navLinks}
+          </ul>
         )}
       </nav>
     </>

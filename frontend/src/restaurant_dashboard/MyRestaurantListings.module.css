@@ -148,6 +148,16 @@
   background-color: var(--error-text);
 }
 
+.safetyBadge {
+  padding: 0.25em 0.6em;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: rgba(39, 174, 96, 0.15);
+  color: #27ae60;
+  text-transform: capitalize;
+}
+
 .actionsCell {
   text-align: center;
   white-space: nowrap;

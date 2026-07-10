@@ -1,0 +1,62 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.formGroup label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.formGroup select,
+.formGroup input {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-family: inherit;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.checklist {
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  background: var(--card-bg);
+}
+
+.checklist legend {
+  font-weight: 700;
+  padding: 0 0.5rem;
+  color: var(--text-primary);
+}
+
+.checkItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0.6rem 0;
+  cursor: pointer;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.checkItem input {
+  margin-top: 0.2rem;
+  accent-color: var(--accent-primary, #2d6a4f);
+}

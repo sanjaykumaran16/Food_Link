@@ -10,12 +10,10 @@ const { buildConversationId } = require('./utils/messages');
 const authRoutes = require('./routes/auth');
 const listingRoutes = require('./routes/listings');
 const claimRoutes = require('./routes/claims');
-const volunteerRoutes = require('./routes/volunteers');
 const notificationRoutes = require('./routes/notifications');
 const reviewRoutes = require('./routes/reviews');
 const messageRoutes = require('./routes/messages');
 const impactRoutes = require('./routes/impact');
-const adminRoutes = require('./routes/admin');
 const templateRoutes = require('./routes/templates');
 const foodlistingsLegacy = require('./routes/foodlistingsLegacy');
 const statsRoutes = require('./routes/stats');
@@ -80,12 +78,10 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/listings', listingRoutes);
 app.use('/api/claims', claimRoutes);
-app.use('/api/volunteers', volunteerRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/impact', impactRoutes);
-app.use('/api/admin', adminRoutes);
 app.use('/api/templates', templateRoutes);
 
 app.use('/api/restaurants', legacy.restaurantRouter);

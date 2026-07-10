@@ -27,10 +27,18 @@ const userSchema = new mongoose.Schema(
     isSuspended: { type: Boolean, default: false },
     documents: [{ type: { type: String }, url: { type: String } }],
     refreshToken: { type: String, default: null },
+    resetPasswordToken: { type: String, default: null },
+    resetPasswordExpires: { type: Date, default: null },
     location: {
       type: { type: String, enum: ['Point'], default: 'Point' },
       coordinates: { type: [Number], default: [0, 0] },
     },
+    preferredCategories: {
+      type: [{ type: String, enum: ['cooked', 'raw', 'packaged', 'bakery', 'dairy'] }],
+      default: [],
+    },
+    dailyMealCapacity: { type: Number, default: 100, min: 0 },
+    serviceRadiusKm: { type: Number, default: 15, min: 1 },
   },
   { timestamps: true }
 );

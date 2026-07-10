@@ -63,3 +63,18 @@ export const logout = async () => {
     clearAuth();
   }
 };
+
+export const updateProfile = async (payload) => {
+  const { data } = await api.patch('/api/auth/me', payload);
+  return data;
+};
+
+export const forgotPassword = async (email, role) => {
+  const { data } = await api.post('/api/auth/forgot-password', { email, role });
+  return data;
+};
+
+export const resetPassword = async (email, token, password) => {
+  const { data } = await api.post('/api/auth/reset-password', { email, token, password });
+  return data;
+};

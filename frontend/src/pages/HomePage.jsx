@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import styles from './HomePage.module.css';
 import { FaHandsHelping, FaUtensils, FaBuilding, FaQuoteLeft, FaStar, FaGlobe, FaShieldAlt, FaHeart } from 'react-icons/fa';
 import { getPublicStats } from '../services/impactService';
 
 function HomePage() {
+  const { t } = useTranslation();
   const [stats, setStats] = useState({ restaurants: 12, ngos: 8, donations: 340 });
   const [loadingStats, setLoadingStats] = useState(true);
 
@@ -45,21 +47,19 @@ function HomePage() {
         <div className={styles.heroContent}>
           <div className={styles.tagline}>
             <FaHeart className={styles.tagIcon} />
-            <span>Connecting surplus to hunger</span>
+            <span>{t('home.heroTagline')}</span>
           </div>
           <h1>
-            Bridging the Gap Between <br />
-            <span className={styles.highlightText}>Surplus Food & Social Impact</span>
+            {t('home.heroTitle1')} <br />
+            <span className={styles.highlightText}>{t('home.heroTitle2')}</span>
           </h1>
-          <p className={styles.subtitle}>
-            A streamlined, trust-centric ecosystem connecting restaurant donors with local NGOs to eliminate waste and deliver warm meals to those who need them most.
-          </p>
+          <p className={styles.subtitle}>{t('home.heroSubtitle')}</p>
           <div className={styles.ctaButtons}>
             <Link to="/restaurant" className={styles.ctaButtonPrimary}>
-              <FaBuilding className={styles.btnIcon} /> I'm a Restaurant
+              <FaBuilding className={styles.btnIcon} /> {t('home.iAmRestaurant')}
             </Link>
             <Link to="/ngo" className={styles.ctaButtonSecondary}>
-              <FaHandsHelping className={styles.btnIcon} /> I'm an NGO
+              <FaHandsHelping className={styles.btnIcon} /> {t('home.iAmNgo')}
             </Link>
           </div>
         </div>
@@ -73,44 +73,44 @@ function HomePage() {
             <h3 className={styles.impactNumber}>
               {loadingStats ? '...' : `${stats.donations}`}
             </h3>
-            <p className={styles.impactLabel}>Surplus Meals Redirected</p>
+            <p className={styles.impactLabel}>{t('home.mealCount')}</p>
           </div>
           <div className={styles.impactCard}>
             <div className={styles.impactIconBg}><FaHandsHelping /></div>
             <h3 className={styles.impactNumber}>
               {loadingStats ? '...' : `${stats.ngos}`}
             </h3>
-            <p className={styles.impactLabel}>Active NGO Partners</p>
+            <p className={styles.impactLabel}>{t('home.ngoCount')}</p>
           </div>
           <div className={styles.impactCard}>
             <div className={styles.impactIconBg}><FaBuilding /></div>
             <h3 className={styles.impactNumber}>
               {loadingStats ? '...' : `${stats.restaurants}`}
             </h3>
-            <p className={styles.impactLabel}>Registered Restaurant Donors</p>
+            <p className={styles.impactLabel}>{t('home.restaurantCount')}</p>
           </div>
         </div>
       </section>
 
       {/* How It Works Section */}
       <section className={styles.featuresSection}>
-        <h2>How FoodLink Works</h2>
-        <p className={styles.sectionSubtitle}>A simple 3-step loop designed for maximum efficiency and immediate social impact.</p>
+        <h2>{t('home.howTitle')}</h2>
+        <p className={styles.sectionSubtitle}>{t('home.howSubtitle')}</p>
         <div className={styles.featuresGrid}>
           <div className={styles.featureCard}>
             <div className={styles.iconCircle}><FaBuilding size={24} /></div>
-            <h3>1. Restaurants List Surplus</h3>
-            <p>Easily post excess meals, fresh ingredients, or daily surplus along with quantities and expiration times.</p>
+            <h3>{t('home.step1Title')}</h3>
+            <p>{t('home.step1Desc')}</p>
           </div>
           <div className={styles.featureCard}>
             <div className={styles.iconCircle}><FaHandsHelping size={24} /></div>
-            <h3>2. NGOs Claim Immediately</h3>
-            <p>Nearby verified NGOs receive notification, check details, and claim the donation instantly via their dashboard.</p>
+            <h3>{t('home.step2Title')}</h3>
+            <p>{t('home.step2Desc')}</p>
           </div>
           <div className={styles.featureCard}>
             <div className={styles.iconCircle}><FaUtensils size={24} /></div>
-            <h3>3. Food reaches the Table</h3>
-            <p>NGO coordinators coordinate instant pickups and safely distribute quality meals directly to target beneficiaries.</p>
+            <h3>{t('home.step3Title')}</h3>
+            <p>{t('home.step3Desc')}</p>
           </div>
         </div>
       </section>
@@ -118,39 +118,39 @@ function HomePage() {
       {/* Trust & Credibility Section */}
       <section className={styles.trustSection}>
         <div className={styles.trustIntro}>
-          <h2>Built on Mutual Trust & Safety</h2>
-          <p>Every account is fully verified to ensure strict food safety standards and absolute transparent coordination.</p>
+          <h2>{t('home.trustTitle')}</h2>
+          <p>{t('home.trustDesc')}</p>
         </div>
         <div className={styles.trustGrid}>
           <div className={styles.trustCard}>
             <FaShieldAlt className={styles.trustIcon} />
-            <h4>Verified Accounts Only</h4>
-            <p>Only registered food businesses and accredited NGOs are approved to request or list donations.</p>
+            <h4>{t('home.trustCard1Title')}</h4>
+            <p>{t('home.trustCard1Desc')}</p>
           </div>
           <div className={styles.trustCard}>
             <FaGlobe className={styles.trustIcon} />
-            <h4>Real-time Notifications</h4>
-            <p>Instantly alert stakeholders of available donations and claim updates to reduce pickup delays.</p>
+            <h4>{t('home.trustCard2Title')}</h4>
+            <p>{t('home.trustCard2Desc')}</p>
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
       <section className={styles.testimonialsSection}>
-        <h2>Voices of Our Partners</h2>
+        <h2>{t('home.testimonialsTitle')}</h2>
         <div className={styles.testimonialsGrid}>
-          {testimonials.map((t, idx) => (
+          {testimonials.map((t_item, idx) => (
             <div key={idx} className={styles.testimonialCard}>
               <FaQuoteLeft className={styles.quoteIcon} />
-              <p className={styles.testimonialText}>"{t.quote}"</p>
+              <p className={styles.testimonialText}>"{t_item.quote}"</p>
               <div className={styles.stars}>
-                {[...Array(t.rating)].map((_, i) => (
+                {[...Array(t_item.rating)].map((_, i) => (
                   <FaStar key={i} className={styles.starIcon} />
                 ))}
               </div>
               <div className={styles.authorDetails}>
-                <h5 className={styles.authorName}>{t.author}</h5>
-                <span className={styles.authorRole}>{t.role}</span>
+                <h5 className={styles.authorName}>{t_item.author}</h5>
+                <span className={styles.authorRole}>{t_item.role}</span>
               </div>
             </div>
           ))}
@@ -160,4 +160,4 @@ function HomePage() {
   );
 }
 
-export default HomePage; 
+export default HomePage;

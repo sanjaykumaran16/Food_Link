@@ -39,12 +39,33 @@ const foodListingSchema = new mongoose.Schema(
     },
     claimedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     deliveryVolunteer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    preparedAt: { type: Date, default: null },
+    storageTemp: {
+      type: String,
+      enum: ['hot', 'cold', 'ambient', 'frozen'],
+      default: 'ambient',
+    },
     safetyChecklist: {
       properlyStored: { type: Boolean, default: false },
       withinSafeTemp: { type: Boolean, default: false },
       labeledCorrectly: { type: Boolean, default: false },
       noCrossContamination: { type: Boolean, default: false },
     },
+    safetyStatus: {
+      type: String,
+      enum: ['pending', 'verified', 'pickup_confirmed', 'completed'],
+      default: 'pending',
+    },
+    safetyWarnings: [{ type: String }],
+    safetyVerifiedAt: { type: Date, default: null },
+    safetyAuditLog: [
+      {
+        action: { type: String, required: true },
+        by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        at: { type: Date, default: Date.now },
+        note: { type: String, default: '' },
+      },
+    ],
     templateId: { type: mongoose.Schema.Types.ObjectId, ref: 'ListingTemplate', default: null },
   },
   { timestamps: true }

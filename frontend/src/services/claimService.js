@@ -23,3 +23,13 @@ export const uploadProof = async (claimId, file) => {
   });
   return data;
 };
+
+export const confirmPickupSafety = async (claimId, confirmation) => {
+  const { data } = await api.post(`/api/claims/${claimId}/confirm-pickup-safety`, confirmation);
+  return data;
+};
+
+export const confirmDeliverySafety = async (claimId, confirmation) => {
+  const { data } = await api.post(`/api/claims/${claimId}/confirm-delivery-safety`, confirmation);
+  return data;
+};

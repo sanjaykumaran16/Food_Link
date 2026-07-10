@@ -1,0 +1,58 @@
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+}
+
+.badges span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.matchBadge {
+  background: rgba(45, 106, 79, 0.15);
+  color: #2d6a4f;
+}
+
+.urgencyBadge.critical {
+  background: rgba(192, 57, 43, 0.15);
+  color: #c0392b;
+}
+
+.urgencyBadge.high {
+  background: rgba(230, 126, 34, 0.15);
+  color: #d35400;
+}
+
+.urgencyBadge.medium {
+  background: rgba(241, 196, 15, 0.2);
+  color: #b7950b;
+}
+
+.urgencyBadge.low {
+  background: rgba(52, 152, 219, 0.15);
+  color: #2980b9;
+}
+
+.distanceBadge {
+  background: var(--card-border);
+  color: var(--text-secondary);
+}
+
+.safetyBadge {
+  background: rgba(39, 174, 96, 0.15);
+  color: #27ae60;
+}
+
+.warningBadge {
+  background: rgba(230, 126, 34, 0.12);
+  color: #e67e22;
+  cursor: help;
+}

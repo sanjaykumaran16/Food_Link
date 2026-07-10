@@ -133,3 +133,47 @@ button:focus-visible {
   box-shadow: var(--card-shadow-hover);
   border-color: var(--accent-primary);
 }
+
+/* ─── Tamil Language Support ──────────────────────────────────────────────── */
+/*
+  When the user switches to Tamil (lang="ta" on <html> + body.lang-ta),
+  we apply Noto Sans Tamil font globally for correct glyph rendering.
+  Text inputs do NOT force Tamil font so email/password fields stay readable.
+*/
+
+:lang(ta),
+body.lang-ta {
+  font-family: var(--font-tamil, "Noto Sans Tamil", "Latha", sans-serif);
+  word-break: break-word;
+  /* Tamil script needs slightly more line height for readability */
+  line-height: 1.75;
+}
+
+body.lang-ta h1,
+body.lang-ta h2,
+body.lang-ta h3,
+body.lang-ta h4,
+body.lang-ta h5,
+body.lang-ta h6 {
+  font-family: var(--font-tamil, "Noto Sans Tamil", "Latha", sans-serif);
+  letter-spacing: 0; /* Tamil doesn't use letter-spacing */
+}
+
+body.lang-ta button,
+body.lang-ta .btn {
+  font-family: var(--font-tamil, "Noto Sans Tamil", "Latha", sans-serif);
+}
+
+/*
+  For text inputs where the user may TYPE in Tamil, we set lang="ta" on the
+  element in the JSX. This allows browsers / mobile keyboards to offer the
+  Tamil IME automatically. We keep email/password inputs as lang="en".
+*/
+input[lang="ta"],
+textarea[lang="ta"] {
+  font-family: var(--font-tamil, "Noto Sans Tamil", "Latha", sans-serif);
+  line-height: 1.8;
+  /* Ensure adequate height for Tamil glyphs which can be taller */
+  min-height: 2.5rem;
+}
+

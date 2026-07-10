@@ -171,13 +171,5 @@ We welcome contributions to improve Food Link! Please read our contributing guid
 - **Volunteers**: For supporting food rescue operations
 - **Open Source Community**: For the amazing tools and libraries
 
-## 📞 Support
-
-For support, questions, or feature requests:
-- Create an issue on GitHub
-- Contact the development team
-- Check our documentation
-
----
 
 **Food Link** - Connecting surplus food with those who need it most. Together, we can make a difference in reducing food waste and fighting hunger. 🌍❤️

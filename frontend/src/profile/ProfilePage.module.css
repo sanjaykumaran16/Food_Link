@@ -3,3 +3,10 @@
 .btn { margin-top: 1rem; padding: 0.6rem 1.2rem; border: none; border-radius: 8px; background: var(--primary-color, #2d6a4f); color: #fff; cursor: pointer; }
 .reviewList { padding-left: 1.25rem; }
 .error { color: #c0392b; }
+.success { color: #27ae60; margin-bottom: 1rem; }
+.hint { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+.formGroup { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.formGroup label { font-weight: 600; font-size: 0.9rem; }
+.formGroup input { padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-primary); }
+.categoryGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.5rem; }
+.checkLabel { display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; cursor: pointer; }
